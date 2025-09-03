@@ -6,6 +6,7 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 ⸻
 
 ✨ Features
+
 	•	📂 Dataset Preview – Cleaned NFHS-5 indicators for states and India overall
 	•	📈 Interactive Charts – Compare Urban, Rural, and Total values across states
 	•	🗺️ Geospatial Mapping – Bubble map of India for quick spatial insights
