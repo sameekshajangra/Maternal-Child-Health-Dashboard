@@ -116,17 +116,46 @@ fig_map = px.scatter_geo(
     size=round_choice,
     color=round_choice,
     hover_name="state",
-    projection="mercator",   # better for India
+    projection="mercator",
     title=f"{indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' } (Bubble Map)",
-    color_continuous_scale="YlOrRd"
+    color_continuous_scale="YlGnBu",
+    size_max=30
 )
 
-# Focus only on India bounds
 fig_map.update_geos(
-    showcountries=True, countrycolor="Black",
-    showcoastlines=True, coastlinecolor="Gray",
-    lataxis_range=[6, 38],  # India lat range
-    lonaxis_range=[68, 98]  # India lon range
+    scope="asia",
+    showcountries=True,
+    countrycolor="Black",
+    showsubunits=True,
+    subunitcolor="Gray",
+    fitbounds="locations",
+    lataxis_range=[6, 37],
+    lonaxis_range=[68, 98]
+)
+
+fig_map.update_layout(
+    margin={"r":0,"t":40,"l":0,"b":0},
+    geo=dict(bgcolor="rgba(0,0,0,0)")
 )
 
 st.plotly_chart(fig_map, use_container_width=True)
+
+# -------------------------
+# Insight Box: Top 3 & Bottom 3 States
+# -------------------------
+st.subheader("📌 Quick Insights")
+
+if round_choice in filtered.columns:
+    top3 = filtered.nlargest(3, round_choice)[["state", round_choice]]
+    bottom3 = filtered.nsmallest(3, round_choice)[["state", round_choice]]
+
+    st.markdown("**🔼 Top 3 States:**")
+    for _, row in top3.iterrows():
+        st.write(f"- {row['state']}: {row[round_choice]}")
+
+    st.markdown("**🔽 Bottom 3 States:**")
+    for _, row in bottom3.iterrows():
+        st.write(f"- {row['state']}: {row[round_choice]}")
+else:
+    st.info("Insights not available for this dataset.")
+
