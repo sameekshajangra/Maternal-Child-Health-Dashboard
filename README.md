@@ -27,6 +27,7 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 ⸻
 
 🛠️ Tech Stack
+
 	•	Python 3.9+
 	•	Streamlit (dashboard framework)
 	•	Plotly Express (interactive charts)
@@ -36,6 +37,7 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 ⸻
 
 📊 Dataset
+
 	•	Source: National Family Health Survey (NFHS-5, 2019–21; NFHS-4, 2015–16)
 	•	Process: Cleaned and structured for state-level indicator comparisons
 	•	Format: CSV hosted in /data/ folder
@@ -43,6 +45,7 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 ⸻
 
 🚀 How to Run Locally
+
 # Clone repository
 git clone https://github.com/sameekshajangra/Maternal-Child-Health-Dashboard.git
 cd Maternal-Child-Health-Dashboard
