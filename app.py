@@ -8,7 +8,7 @@ st.title("📊 Maternal & Child Health Dashboard")
 st.write("This dashboard visualizes maternal and child health indicators from NFHS-5 (2019–21).")
 
 # Load cleaned dataset from GitHub
-url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/main/data/NFHS5-States-Clean.csv"
+url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/refs/heads/main/data/NFHS5_states_clean.csv"
 df = pd.read_csv(url)
 
 # Dataset Preview
