@@ -1,3 +1,5 @@
+import json
+import urllib.request
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -61,3 +63,27 @@ if round_choice in filtered.columns:
     st.plotly_chart(fig, use_container_width=True)
 else:
     st.error(f"Column {round_choice} not found in dataset.")
+
+# -------------------------
+# Choropleth Map of India
+# -------------------------
+st.subheader(f"🗺️ Choropleth Map — {indicator_choice}")
+
+# Load India GeoJSON (Datameet source)
+geojson_url = "https://raw.githubusercontent.com/datameet/maps/master/States/india_states.geojson"
+with urllib.request.urlopen(geojson_url) as response:
+    india_states = json.load(response)
+
+# Choropleth
+fig_map = px.choropleth(
+    filtered,
+    geojson=india_states,
+    featureidkey="properties.ST_NM",  # property in the GeoJSON
+    locations="state",                # column in your dataframe
+    color=round_choice,               # column for coloring
+    color_continuous_scale="YlOrRd",
+    title=f"{indicator_choice} across states ({ 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' })"
+)
+
+fig_map.update_geos(fitbounds="locations", visible=False)
+st.plotly_chart(fig_map, use_container_width=True)
