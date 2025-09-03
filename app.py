@@ -118,7 +118,7 @@ fig_map = px.scatter_geo(
     hover_name="state",
     projection="mercator",
     title=f"{indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' } (Bubble Map)",
-    color_continuous_scale="YlGnBu",
+    color_continuous_scale="Viridis",
     size_max=30
 )
 
@@ -130,12 +130,12 @@ fig_map.update_geos(
     subunitcolor="Gray",
     fitbounds="locations",
     lataxis_range=[6, 37],
-    lonaxis_range=[68, 98]
+    lonaxis_range=[68, 98],
+    bgcolor="white"  # Force light background
 )
 
 fig_map.update_layout(
-    margin={"r":0,"t":40,"l":0,"b":0},
-    geo=dict(bgcolor="rgba(0,0,0,0)")
+    margin={"r":0,"t":40,"l":0,"b":0}
 )
 
 st.plotly_chart(fig_map, use_container_width=True)
@@ -158,4 +158,3 @@ if round_choice in filtered.columns:
         st.write(f"- {row['state']}: {row[round_choice]}")
 else:
     st.info("Insights not available for this dataset.")
-
