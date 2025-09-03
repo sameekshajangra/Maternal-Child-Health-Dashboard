@@ -8,23 +8,32 @@ st.title("📊 Maternal & Child Health Dashboard")
 st.write("This dashboard visualizes maternal and child health indicators from NFHS-5 (2019–21).")
 
 # Load cleaned dataset from GitHub
-url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/refs/heads/main/data/NFHS5_states_clean.csv"
+url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/main/data/NFHS5-States-Clean.csv"
 df = pd.read_csv(url)
 
 # Dataset Preview
 st.subheader("📂 Dataset Preview")
 st.dataframe(df.head())
 
-# Simple Bar Chart Example
-st.subheader("📈 Sample Indicator Chart")
-if "State" in df.columns and "Value" in df.columns:
+# Interactive Indicator Chart
+st.subheader("📈 Indicator Comparison")
+
+if "indicator" in df.columns:
+    # Dropdown to choose indicator
+    indicator_choice = st.selectbox("Choose an indicator:", df["indicator"].unique())
+
+    # Filter for selected indicator
+    filtered = df[df["indicator"] == indicator_choice]
+
+    # Grouped bar chart: urban, rural, total
     fig = px.bar(
-        df.head(20),
-        x="State",
-        y="Value",
-        color="Indicator",
-        title="Sample Indicators by State"
+        filtered,
+        x="state",
+        y=["nfhs5_urban", "nfhs5_rural", "nfhs5_total"],
+        barmode="group",
+        title=f"{indicator_choice} (NFHS-5)"
     )
+
     st.plotly_chart(fig, use_container_width=True)
 else:
-    st.error("Dataset format issue: 'State' and 'Value' columns not found.")
+    st.error("Dataset format issue: 'indicator' column not found.")
