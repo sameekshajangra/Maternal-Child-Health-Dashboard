@@ -60,7 +60,7 @@ else:
     st.error(f"Column {round_choice} not found in dataset.")
 
 # -------------------------
-# Bubble Map of India (Safe)
+# Bubble Map of India (with Outline)
 # -------------------------
 st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
 
@@ -116,9 +116,17 @@ fig_map = px.scatter_geo(
     size=round_choice,
     color=round_choice,
     hover_name="state",
-    projection="natural earth",
-    title=f"{indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' } (Bubble Map)"
+    projection="mercator",   # better for India
+    title=f"{indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' } (Bubble Map)",
+    color_continuous_scale="YlOrRd"
 )
 
-fig_map.update_geos(fitbounds="locations", visible=False)
+# Focus only on India bounds
+fig_map.update_geos(
+    showcountries=True, countrycolor="Black",
+    showcoastlines=True, coastlinecolor="Gray",
+    lataxis_range=[6, 38],  # India lat range
+    lonaxis_range=[68, 98]  # India lon range
+)
+
 st.plotly_chart(fig_map, use_container_width=True)
