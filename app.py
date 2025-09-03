@@ -141,7 +141,8 @@ fig_map.update_layout(
 st.plotly_chart(fig_map, use_container_width=True)
 
 # -------------------------
-# Insight Box: Top 3 & Bottom 3 States
+# -------------------------
+# Insight Box: Top 3 & Bottom 3 States (Styled Cards)
 # -------------------------
 st.subheader("📌 Quick Insights")
 
@@ -149,12 +150,24 @@ if round_choice in filtered.columns:
     top3 = filtered.nlargest(3, round_choice)[["state", round_choice]]
     bottom3 = filtered.nsmallest(3, round_choice)[["state", round_choice]]
 
-    st.markdown("**🔼 Top 3 States:**")
-    for _, row in top3.iterrows():
-        st.write(f"- {row['state']}: {row[round_choice]}")
+    col1, col2 = st.columns(2)
 
-    st.markdown("**🔽 Bottom 3 States:**")
-    for _, row in bottom3.iterrows():
-        st.write(f"- {row['state']}: {row[round_choice]}")
+    with col1:
+        st.markdown(
+            "<div style='background-color:#d4edda; padding:15px; border-radius:10px;'>"
+            "<h4 style='color:#155724;'>🔼 Top 3 States</h4>"
+            + "".join([f"<p><b>{row['state']}</b>: {row[round_choice]}</p>" for _, row in top3.iterrows()])
+            + "</div>",
+            unsafe_allow_html=True
+        )
+
+    with col2:
+        st.markdown(
+            "<div style='background-color:#f8d7da; padding:15px; border-radius:10px;'>"
+            "<h4 style='color:#721c24;'>🔽 Bottom 3 States</h4>"
+            + "".join([f"<p><b>{row['state']}</b>: {row[round_choice]}</p>" for _, row in bottom3.iterrows()])
+            + "</div>",
+            unsafe_allow_html=True
+        )
 else:
     st.info("Insights not available for this dataset.")
