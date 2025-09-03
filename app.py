@@ -1,5 +1,3 @@
-import json
-import urllib.request
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -74,15 +72,67 @@ geojson_url = "https://raw.githubusercontent.com/datameet/maps/master/States/ind
 with urllib.request.urlopen(geojson_url) as response:
     india_states = json.load(response)
 
-# Choropleth
-fig_map = px.choropleth(
-    filtered,
-    geojson=india_states,
-    featureidkey="properties.ST_NM",  # property in the GeoJSON
-    locations="state",                # column in your dataframe
-    color=round_choice,               # column for coloring
-    color_continuous_scale="YlOrRd",
-    title=f"{indicator_choice} across states ({ 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' })"
+# -------------------------
+# Bubble Map of India (Safe Version)
+# -------------------------
+st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
+
+# Approximate lat/lon coordinates for each state/UT (centroids)
+state_coords = {
+    "Andaman & Nicobar Islands": (11.667, 92.736),
+    "Andhra Pradesh": (16.506, 80.648),
+    "Arunachal Pradesh": (27.084, 93.605),
+    "Assam": (26.200, 92.937),
+    "Bihar": (25.096, 85.313),
+    "Chhattisgarh": (21.251, 81.629),
+    "Delhi": (28.7041, 77.1025),
+    "Goa": (15.299, 74.124),
+    "Gujarat": (22.309, 72.136),
+    "Haryana": (29.0588, 76.0856),
+    "Himachal Pradesh": (31.1048, 77.1734),
+    "Jammu & Kashmir": (33.778, 76.576),
+    "Jharkhand": (23.6102, 85.2799),
+    "Karnataka": (12.9716, 77.5946),
+    "Kerala": (10.8505, 76.2711),
+    "Ladakh": (34.2268, 77.5619),
+    "Lakshadweep": (10.5667, 72.6417),
+    "Madhya Pradesh": (23.2599, 77.4126),
+    "Maharashtra": (19.7515, 75.7139),
+    "Manipur": (24.817, 93.936),
+    "Meghalaya": (25.467, 91.366),
+    "Mizoram": (23.164, 92.937),
+    "Nagaland": (26.158, 94.562),
+    "Odisha": (20.9517, 85.0985),
+    "Puducherry": (11.9416, 79.8083),
+    "Punjab": (31.1471, 75.3412),
+    "Rajasthan": (26.9124, 75.7873),
+    "Sikkim": (27.533, 88.512),
+    "Tamil Nadu": (11.1271, 78.6569),
+    "Telangana": (17.385, 78.4867),
+    "Tripura": (23.8315, 91.2868),
+    "Uttar Pradesh": (26.8467, 80.9462),
+    "Uttarakhand": (30.3165, 78.0322),
+    "West Bengal": (22.9868, 87.8550),
+    "Dadra & Nagar Haveli and Daman & Diu": (20.397, 72.832),
+    "Chandigarh": (30.7333, 76.7794),
+}
+
+# Build a temp DataFrame with lat/lon
+map_df = filtered.copy()
+map_df["lat"] = map_df["state"].map(lambda s: state_coords.get(s, (None, None))[0])
+map_df["lon"] = map_df["state"].map(lambda s: state_coords.get(s, (None, None))[1])
+map_df = map_df.dropna(subset=["lat", "lon"])
+
+# Plot bubble map
+fig_map = px.scatter_geo(
+    map_df,
+    lat="lat",
+    lon="lon",
+    size=round_choice,
+    color=round_choice,
+    hover_name="state",
+    projection="natural earth",
+    title=f"{indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4' } (Bubble Map)"
 )
 
 fig_map.update_geos(fitbounds="locations", visible=False)
