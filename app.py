@@ -16,7 +16,7 @@ st.write("This dashboard visualizes maternal and child health indicators from NF
 # -------------------------
 # Load dataset
 # -------------------------
-url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/refs/heads/main/data/NFHS5_states_clean.csv"
+url = "https://raw.githubusercontent.com/sameekshajangra/Maternal-Child-Health-Dashboard/main/data/NFHS5-States-Clean.csv"
 df = pd.read_csv(url)
 
 # -------------------------
@@ -30,10 +30,8 @@ st.dataframe(df.head())
 # -------------------------
 st.sidebar.header("🔎 Filters")
 
-# Indicator dropdown in sidebar
 indicator_choice = st.sidebar.selectbox("Choose an indicator:", sorted(df["indicator"].dropna().unique()))
 
-# NFHS round radio button in sidebar
 round_choice = st.sidebar.radio(
     "Choose survey round:",
     ["nfhs5_total", "nfhs4_total"],
@@ -48,7 +46,6 @@ st.subheader(f"📈 {indicator_choice} — { 'NFHS-5' if round_choice=='nfhs5_to
 filtered = df[df["indicator"] == indicator_choice]
 
 if round_choice in filtered.columns:
-    # Sort states by chosen round value
     filtered = filtered.sort_values(by=round_choice, ascending=False)
 
     fig = px.bar(
@@ -63,21 +60,11 @@ else:
     st.error(f"Column {round_choice} not found in dataset.")
 
 # -------------------------
-# Choropleth Map of India
-# -------------------------
-st.subheader(f"🗺️ Choropleth Map — {indicator_choice}")
-
-# Load India GeoJSON (Datameet source)
-geojson_url = "https://raw.githubusercontent.com/datameet/maps/master/States/india_states.geojson"
-with urllib.request.urlopen(geojson_url) as response:
-    india_states = json.load(response)
-
-# -------------------------
-# Bubble Map of India (Safe Version)
+# Bubble Map of India (Safe)
 # -------------------------
 st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
 
-# Approximate lat/lon coordinates for each state/UT (centroids)
+# Approximate lat/lon coordinates for states
 state_coords = {
     "Andaman & Nicobar Islands": (11.667, 92.736),
     "Andhra Pradesh": (16.506, 80.648),
@@ -117,13 +104,11 @@ state_coords = {
     "Chandigarh": (30.7333, 76.7794),
 }
 
-# Build a temp DataFrame with lat/lon
 map_df = filtered.copy()
 map_df["lat"] = map_df["state"].map(lambda s: state_coords.get(s, (None, None))[0])
 map_df["lon"] = map_df["state"].map(lambda s: state_coords.get(s, (None, None))[1])
 map_df = map_df.dropna(subset=["lat", "lon"])
 
-# Plot bubble map
 fig_map = px.scatter_geo(
     map_df,
     lat="lat",
