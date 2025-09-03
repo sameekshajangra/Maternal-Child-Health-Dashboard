@@ -16,13 +16,13 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 📸 Screenshots
 ### Dashboard Home  
-![Dashboard Screenshot](<img width="1434" height="604" alt="Image" src="https://github.com/user-attachments/assets/0f95c674-1a53-4956-a6dd-231b2bfc0d2e" />)  
+![Dashboard Screenshot](https://github.com/user-attachments/assets/0f95c674-1a53-4956-a6dd-231b2bfc0d2e)  
 
 ### Interactive Bar Chart  
-![Bar Chart Screenshot](<img width="1139" height="565" alt="Image" src="https://github.com/user-attachments/assets/a8ab748d-12d2-4b6f-9aca-867cb1091c5e" />)  
+![Bar Chart Screenshot](https://github.com/user-attachments/assets/a8ab748d-12d2-4b6f-9aca-867cb1091c5e)  
 
 ### India Bubble Map  
-![Map Screenshot](<img width="1451" height="823" alt="Image" src="https://github.com/user-attachments/assets/a70201db-091b-450f-ad23-0685ccc5792a" />)  
+![Map Screenshot](https://github.com/user-attachments/assets/a70201db-091b-450f-ad23-0685ccc5792a)  
 ⸻
 
 🛠️ Tech Stack
