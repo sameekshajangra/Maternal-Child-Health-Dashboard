@@ -171,43 +171,55 @@ else:
 
 # -------------------------
 # -------------------------
-# Correlation Heatmap (across indicators)
+# Correlation Heatmap (Selected Key Indicators)
 # -------------------------
-st.subheader("📊 Correlation Between Indicators")
+st.subheader("🌡️ Correlation Between Key Maternal & Child Health Indicators")
 
-# Pivot data: states × indicators
+# Define a smaller set of important indicators
+key_indicators = [
+    "1. Female population age 6 years and above who ever attended school (%)",
+    "46. Mothers who received postnatal care from a doctor/nurse/LHV/ANM/midwife/other health personnel within 2 days of delivery (%)",
+    "55. Births in a private health facility that were delivered by caesarean section (%)",
+    "72. Children with diarrhoea in the 2 weeks preceding the survey taken to a health facility or health provider (%)",
+    "80. Total children age 6-23 months receiving an adequate diet (%)",
+    "97. Men age 15-49 years who are anaemic (<13.0 g/dl) (%)",
+    "88. Women who are overweight or obese (BMI ≥25.0 kg/m2) (%)",
+]
+
+# Pivot into wide format
 wide_df = df.pivot_table(index="state", columns="indicator", values=round_choice, aggfunc="mean")
 
-# Drop columns with too many missing values
-wide_df = wide_df.dropna(axis=1, thresh=len(wide_df) - 5)
+# Keep only selected indicators
+wide_df = wide_df[key_indicators].dropna(axis=1, how="any")
 
 if not wide_df.empty:
     corr = wide_df.corr().round(2)
 
     fig_heat = px.imshow(
         corr,
-        text_auto=False,  # Don't print all numbers (less cluttered)
-        color_continuous_scale="RdBu_r",
-        title=f"Correlation of Indicators ({'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4'})",
+        text_auto=True,  # show numbers inside cells
+        color_continuous_scale="RdYlBu_r",  # Red-Blue palette
+        title=f"Correlation of Key Indicators ({'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4'})",
         aspect="auto"
     )
 
-    # Rotate x-axis labels for readability
-    fig_heat.update_xaxes(tickangle=45)
+    # Rotate labels neatly
+    fig_heat.update_xaxes(tickangle=30, side="bottom")
     fig_heat.update_yaxes(tickangle=0)
 
-    # Make bigger
     fig_heat.update_layout(
-        width=900,
-        height=700,
-        margin=dict(l=100, r=100, t=100, b=100)
+        width=800,
+        height=600,
+        margin=dict(l=80, r=80, t=80, b=80),
+        xaxis_title="Indicators",
+        yaxis_title="Indicators"
     )
 
     st.plotly_chart(fig_heat, use_container_width=True)
 
-    st.info("A high positive correlation means two indicators improve together (e.g., female literacy & institutional deliveries). A negative correlation means trade-offs.")
+    st.success("✅ This heatmap highlights how core maternal & child health indicators move together across states.")
 else:
-    st.warning("Not enough data to compute correlation heatmap.")
+    st.warning("Not enough data for selected indicators.")
 # -------------------------
 # Bubble Map of India (with Outline)
 # -------------------------
