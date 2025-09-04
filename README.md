@@ -1,4 +1,4 @@
-📊 #Maternal & Child Health Dashboard
+📊 Maternal & Child Health Dashboard
 
 A data-driven interactive dashboard built using Python, Streamlit, and Plotly to visualize key Maternal & Child Health indicators from the NFHS-5 (2019–21) and NFHS-4 (2015–16) surveys.
 
