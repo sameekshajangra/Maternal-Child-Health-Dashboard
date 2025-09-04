@@ -7,12 +7,14 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 ✨ Features
 
-- Interactive bar charts (urban, rural, total values).
-- Statewise bubble map of India.
-- Quick insights: **Top & Bottom 3 states** for each indicator.
-- Change insights: **NFHS-4 → NFHS-5 progress**.
-- Downloadable CSV comparison tables.
-- Clean, mobile-friendly Streamlit app.
+	•	📂 Dataset Preview – Clean NFHS-5 dataset with state-wise indicators.
+	•	🎛 Sidebar Filters – Select indicators and compare NFHS-4 vs NFHS-5.
+	•	📈 Interactive Bar Charts – State-wise comparison across rounds.
+	•	🗺️ Bubble Maps – Geographic visualization of indicator distribution.
+	•	🔥 Heatmap – Compare multiple key health indicators across states.
+	•	📌 Quick Insights – Automatically highlights top 3 & bottom 3 states.
+	•	🔄 Change Over Time – Identifies biggest improvers and decliners.
+	•	🏥 State Profiles – Gradient cards for key indicators + grouped bar chart progress.
  
 ⸻
 
@@ -29,11 +31,12 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 🛠️ Tech Stack
 
-	•	Python 3.9+
-	•	Streamlit (dashboard framework)
-	•	Plotly Express (interactive charts)
-	•	Pandas (data handling & cleaning)
-	•	GeoJSON / Mapping (for Indian states)
+	•	Python
+	•	Streamlit – frontend dashboard
+	•	Plotly Express – interactive visualizations
+	•	Pandas / NumPy – data handling
+	•	GitHub Pages + Streamlit Cloud – deployment
+
 
 ⸻
 
@@ -55,14 +58,17 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 🚀 How to Run Locally
 
-# Clone repository
+ Clone repository
+
 git clone https://github.com/sameekshajangra/Maternal-Child-Health-Dashboard.git
 cd Maternal-Child-Health-Dashboard
 
-# Install dependencies
+ Install dependencies
+ 
 pip install -r requirements.txt
 
-# Run Streamlit app
+ Run Streamlit app
+ 
 streamlit run app.py
 
 
@@ -71,3 +77,9 @@ streamlit run app.py
 🌍 Motivation & Relevance
 
 This project was created to make maternal and child health data easy to understand and use. By turning survey numbers into interactive visuals, it highlights gaps, progress, and state-wise differences. The goal is to support better awareness, planning, and decisions that improve the lives of women and children.
+
+🚀 Future Improvements
+
+	•	Add time-series data from earlier NFHS rounds.
+	•	Introduce district-level granularity.
+	•	Build predictive analytics for maternal & child health indicators.
