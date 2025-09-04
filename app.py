@@ -111,65 +111,77 @@ if {"nfhs4_total", "nfhs5_total"}.issubset(filtered.columns):
     csv_out = comp[display_cols].to_csv(index=False)
     st.download_button("⬇️ Download comparison CSV", csv_out, file_name="nfhs_comparison.csv", mime="text/csv")
 
-    # Quick auto insights
-    st.markdown("#### 🔍 Quick Insights (Change over time)")
-    top_gain = comp.nlargest(3, "pct_change").dropna(subset=["pct_change"])
-    top_decline = comp.nsmallest(3, "pct_change").dropna(subset=["pct_change"])
-
-    if not top_gain.empty:
-        st.markdown("**Top improvements:**")
-        for _, r in top_gain.iterrows():
-            st.write(f"- **{r['state']}**: {r['pct_change_round']}% ({r['nfhs4_total']} → {r['nfhs5_total']})")
-
-    if not top_decline.empty:
-        st.markdown("**Largest declines:**")
-        for _, r in top_decline.iterrows():
-            st.write(f"- **{r['state']}**: {r['pct_change_round']}% ({r['nfhs4_total']} → {r['nfhs5_total']})")
-
 # -------------------------
-# NFHS-4 vs NFHS-5 Change Insights (Styled Cards)
+# Tab 2: Change Over Time (NFHS-4 → NFHS-5)
 # -------------------------
-st.subheader("📊 Change Insights: NFHS-4 → NFHS-5")
+with tabs[1]:
+    if "nfhs4_total" in filtered.columns and "nfhs5_total" in filtered.columns:
+        filtered["change_pct"] = ((filtered["nfhs5_total"] - filtered["nfhs4_total"]) / filtered["nfhs4_total"]) * 100
 
-if {"nfhs4_total", "nfhs5_total"}.issubset(filtered.columns):
-    comp = filtered.copy()
-    comp["nfhs4_total"] = pd.to_numeric(comp["nfhs4_total"], errors="coerce")
-    comp["nfhs5_total"] = pd.to_numeric(comp["nfhs5_total"], errors="coerce")
+        top3_change = filtered.nlargest(3, "change_pct")[["state", "nfhs4_total", "nfhs5_total", "change_pct"]]
+        bottom3_change = filtered.nsmallest(3, "change_pct")[["state", "nfhs4_total", "nfhs5_total", "change_pct"]]
 
-    comp["abs_change"] = comp["nfhs5_total"] - comp["nfhs4_total"]
-    comp["pct_change"] = np.where(
-        comp["nfhs4_total"].fillna(0) == 0,
-        np.nan,
-        comp["abs_change"] / comp["nfhs4_total"] * 100
-    )
-    comp["pct_change_round"] = comp["pct_change"].round(1)
+        col1, col2 = st.columns(2)
 
-    top_gain = comp.nlargest(3, "pct_change").dropna(subset=["pct_change"])
-    top_decline = comp.nsmallest(3, "pct_change").dropna(subset=["pct_change"])
+        # ---- Top Improvers ----
+        with col1:
+            st.markdown(
+                "<div style='background-color:#d1ecf1; padding:15px; border-radius:10px;'>"
+                "<h4 style='color:#0c5460;'>📈 Top 3 Improvers</h4>",
+                unsafe_allow_html=True
+            )
 
-    col3, col4 = st.columns(2)
+            for _, row in top3_change.iterrows():
+                st.markdown(f"<b>{row['state']}</b>: {row['change_pct']:.2f}%", unsafe_allow_html=True)
 
-    with col3:
-        st.markdown(
-            "<div style='background-color:#dbeafe; padding:15px; border-radius:10px;'>"
-            "<h4 style='color:#1e3a8a;'>📈 Biggest Improvements</h4>"
-            + "".join([f"<p><b>{row['state']}</b>: {row['pct_change_round']}% ({row['nfhs4_total']} → {row['nfhs5_total']})</p>" for _, row in top_gain.iterrows()])
-            + "</div>",
-            unsafe_allow_html=True
-        )
+                # Mini line chart (NFHS-4 → NFHS-5)
+                mini_df = pd.DataFrame({
+                    "Survey Round": ["NFHS-4", "NFHS-5"],
+                    "Value": [row["nfhs4_total"], row["nfhs5_total"]]
+                })
 
-    with col4:
-        st.markdown(
-            "<div style='background-color:#fff3cd; padding:15px; border-radius:10px;'>"
-            "<h4 style='color:#856404;'>📉 Largest Declines</h4>"
-            + "".join([f"<p><b>{row['state']}</b>: {row['pct_change_round']}% ({row['nfhs4_total']} → {row['nfhs5_total']})</p>" for _, row in top_decline.iterrows()])
-            + "</div>",
-            unsafe_allow_html=True
-        )
-else:
-    st.info("NFHS-4 data not available for this indicator.")
+                mini_chart = px.line(
+                    mini_df,
+                    x="Survey Round",
+                    y="Value",
+                    markers=True,
+                    title=f"{row['state']} Progress"
+                )
+                mini_chart.update_layout(margin=dict(l=0, r=0, t=30, b=0), height=250, width=300)
+                st.plotly_chart(mini_chart, use_container_width=False)
 
-# -------------------------
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # ---- Bottom Decliners ----
+        with col2:
+            st.markdown(
+                "<div style='background-color:#fff3cd; padding:15px; border-radius:10px;'>"
+                "<h4 style='color:#856404;'>📉 Bottom 3 Decliners</h4>",
+                unsafe_allow_html=True
+            )
+
+            for _, row in bottom3_change.iterrows():
+                st.markdown(f"<b>{row['state']}</b>: {row['change_pct']:.2f}%", unsafe_allow_html=True)
+
+                # Mini line chart (NFHS-4 → NFHS-5)
+                mini_df = pd.DataFrame({
+                    "Survey Round": ["NFHS-4", "NFHS-5"],
+                    "Value": [row["nfhs4_total"], row["nfhs5_total"]]
+                })
+
+                mini_chart = px.line(
+                    mini_df,
+                    x="Survey Round",
+                    y="Value",
+                    markers=True,
+                    title=f"{row['state']} Progress"
+                )
+                mini_chart.update_layout(margin=dict(l=0, r=0, t=30, b=0), height=250, width=300)
+                st.plotly_chart(mini_chart, use_container_width=False)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.info("NFHS-4 data not available for this indicator.")
 # -------------------------
 # Robust Correlation Heatmap (selectable & readable)
 # -------------------------
