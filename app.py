@@ -277,6 +277,9 @@ else:
         st.success("✅ Heatmap ready. Higher positive values indicate indicators that move together; negative values indicate inverse relations.")
 
 # -------------------------
+# Debug: Show all unique indicator names in the dataset
+st.subheader("📋 Available Indicators (Debug View)")
+st.write(df["indicator"].unique())
 # Bubble Map of India (with Outline)
 # -------------------------
 st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
