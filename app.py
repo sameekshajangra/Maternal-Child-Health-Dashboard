@@ -251,16 +251,26 @@ if not state_data.empty:
     ])]
 
     cols = st.columns(len(key_stats))
-    colors = ["#4CAF50", "#2196F3", "#FF9800", "#E91E63"]  # nice theme colors
+    colors = ["#4CAF50", "#2196F3", "#FF9800", "#E91E63"]  # theme colors
 
     for col, (_, row), c in zip(cols, key_stats.iterrows(), colors):
         col.markdown(
             f"""
-            <div style="background: linear-gradient(135deg, {c}20, {c}40); 
-                        padding:18px; border-radius:15px; 
-                        text-align:center; box-shadow:2px 2px 12px rgba(0,0,0,0.15);">
-                <h4 style="color:#222; font-size:16px; margin-bottom:8px;">{row['indicator']}</h4>
-                <p style="margin:0; font-size:18px; color:#000;">
+            <div style="
+                background: linear-gradient(135deg, {c}20, {c}40); 
+                padding:18px; 
+                border-radius:15px; 
+                text-align:center; 
+                box-shadow:2px 2px 12px rgba(0,0,0,0.15); 
+                height: 180px;  
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center;
+            ">
+                <h4 style="color:#222; font-size:14px; margin-bottom:8px; min-height:40px;">
+                    {row['indicator']}
+                </h4>
+                <p style="margin:0; font-size:20px; color:#000;">
                     <b>NFHS-5: {row['nfhs5_total']}</b>
                 </p>
                 <p style="margin:0; font-size:14px; color:#333;">
