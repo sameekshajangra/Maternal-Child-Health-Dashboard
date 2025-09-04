@@ -7,11 +7,12 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 ✨ Features
 
-	•	📂 Dataset Preview – Cleaned NFHS-5 indicators for states and India overall
-	•	📈 Interactive Charts – Compare Urban, Rural, and Total values across states
-	•	🗺️ Geospatial Mapping – Bubble map of India for quick spatial insights
-	•	📊 Trend Comparison – NFHS-4 vs NFHS-5 indicator changes
-	•	📌 Quick Insights – Auto-generated Top & Bottom states for each indicator
+- Interactive bar charts (urban, rural, total values).
+- Statewise bubble map of India.
+- Quick insights: **Top & Bottom 3 states** for each indicator.
+- Change insights: **NFHS-4 → NFHS-5 progress**.
+- Downloadable CSV comparison tables.
+- Clean, mobile-friendly Streamlit app.
  
 ⸻
 
@@ -41,6 +42,14 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 	•	Source: National Family Health Survey (NFHS-5, 2019–21; NFHS-4, 2015–16)
 	•	Process: Cleaned and structured for state-level indicator comparisons
 	•	Format: CSV hosted in /data/ folder
+
+⸻
+
+## 🔍 Insights
+
+- **Current NFHS-5 snapshot**: Kerala, Mizoram, and Goa consistently perform among the top states, while Bihar, Uttar Pradesh, and Jharkhand lag behind.  
+- **Change since NFHS-4**: Significant improvements observed in Odisha and Chhattisgarh, while some states show declines that require policy attention.  
+- **Policy relevance**: These insights align with **SDG-3 (Good Health & Well-Being)** and **SDG-5 (Gender Equality)**.
 
 ⸻
 
