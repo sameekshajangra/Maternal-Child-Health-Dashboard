@@ -233,15 +233,16 @@ with tabs[1]:
         st.info("NFHS-4 data not available for this indicator.")
 
 # -------------------------
+# -------------------------
 # State Profile Dashboard
 # -------------------------
+st.markdown("---")
 st.subheader(f"📍 State Profile: {selected_state}")
 
 if not state_data.empty:
-    # ---- Card-style Key Stats ----
-    st.markdown("### 🧾 Key Stats (NFHS-5 vs NFHS-4)")
+    # ---- Hero Cards for Key Indicators ----
+    st.markdown("### 🌟 Highlight Indicators")
 
-    # Pick 3–4 headline indicators to display as cards
     key_stats = state_data[state_data["indicator"].isin([
         "50. Institutional births (%)",
         "54. Births delivered by caesarean section (%)",
@@ -250,21 +251,28 @@ if not state_data.empty:
     ])]
 
     cols = st.columns(len(key_stats))
-    for col, (_, row) in zip(cols, key_stats.iterrows()):
+    colors = ["#4CAF50", "#2196F3", "#FF9800", "#E91E63"]  # nice theme colors
+
+    for col, (_, row), c in zip(cols, key_stats.iterrows(), colors):
         col.markdown(
             f"""
-            <div style="background-color:#f9f9f9; padding:15px; border-radius:12px; 
-                        text-align:center; box-shadow:2px 2px 8px rgba(0,0,0,0.1);">
-                <h4 style="color:#333; margin-bottom:5px;">{row['indicator']}</h4>
-                <p style="margin:0; color:#2c7;">NFHS-5: <b>{row['nfhs5_total']}</b></p>
-                <p style="margin:0; color:#888;">NFHS-4: {row['nfhs4_total']}</p>
+            <div style="background: linear-gradient(135deg, {c}20, {c}40); 
+                        padding:18px; border-radius:15px; 
+                        text-align:center; box-shadow:2px 2px 12px rgba(0,0,0,0.15);">
+                <h4 style="color:#222; font-size:16px; margin-bottom:8px;">{row['indicator']}</h4>
+                <p style="margin:0; font-size:18px; color:#000;">
+                    <b>NFHS-5: {row['nfhs5_total']}</b>
+                </p>
+                <p style="margin:0; font-size:14px; color:#333;">
+                    NFHS-4: {row['nfhs4_total']}
+                </p>
             </div>
             """,
             unsafe_allow_html=True
         )
 
     # ---- Progress Bar Chart ----
-    st.markdown("### 📈 Progress Over Time (NFHS-4 → NFHS-5)")
+    st.markdown("### 📊 Progress Over Time (All Indicators)")
     fig_state = px.bar(
         state_data,
         x="indicator",
@@ -272,9 +280,15 @@ if not state_data.empty:
         barmode="group",
         title=f"{selected_state} — NFHS-4 vs NFHS-5",
         labels={"value": "Value", "indicator": "Indicator"},
-        color_discrete_map={"nfhs4_total": "#1f77b4", "nfhs5_total": "#ff7f0e"}
+        color_discrete_map={"nfhs4_total": "#5DADE2", "nfhs5_total": "#F39C12"}
     )
-    fig_state.update_layout(xaxis_tickangle=-45, height=550)
+    fig_state.update_layout(
+        xaxis_tickangle=-45,
+        height=600,
+        margin=dict(l=20, r=20, t=60, b=80),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)"
+    )
     st.plotly_chart(fig_state, use_container_width=True)
 
 else:
