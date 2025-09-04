@@ -1,8 +1,9 @@
-📊 Maternal & Child Health Dashboard
+📊 #Maternal & Child Health Dashboard
 
 A data-driven interactive dashboard built using Python, Streamlit, and Plotly to visualize key Maternal & Child Health indicators from the NFHS-5 (2019–21) and NFHS-4 (2015–16) surveys.
 
 👉 Live Demo: 👉 **Live Demo:** [Streamlit App](https://maternal-child-health-dashboard-4appugn5fq9hjg4jzmlkwhk.streamlit.app/)
+
 ⸻
 
 ✨ Features
@@ -26,7 +27,6 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 	•	Pandas / NumPy – data handling
 	•	GitHub Pages + Streamlit Cloud – deployment
 
-
 ⸻
 
 📊 Dataset
@@ -47,16 +47,16 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
 
 🚀 How to Run Locally
 
- Clone repository
+ #Clone repository
 
 git clone https://github.com/sameekshajangra/Maternal-Child-Health-Dashboard.git
 cd Maternal-Child-Health-Dashboard
 
- Install dependencies
+ #Install dependencies
  
 pip install -r requirements.txt
 
- Run Streamlit app
+ #Run Streamlit app
  
 streamlit run app.py
 
@@ -66,6 +66,8 @@ streamlit run app.py
 🌍 Motivation & Relevance
 
 This project was created to make maternal and child health data easy to understand and use. By turning survey numbers into interactive visuals, it highlights gaps, progress, and state-wise differences. The goal is to support better awareness, planning, and decisions that improve the lives of women and children.
+
+⸻
 
 🚀 Future Improvements
 
