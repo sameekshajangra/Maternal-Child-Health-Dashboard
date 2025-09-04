@@ -18,17 +18,6 @@ A data-driven interactive dashboard built using Python, Streamlit, and Plotly to
  
 ⸻
 
-📸 Screenshots
-### Dashboard Home  
-![Dashboard Screenshot](https://github.com/user-attachments/assets/0f95c674-1a53-4956-a6dd-231b2bfc0d2e)  
-
-### Interactive Bar Chart  
-![Bar Chart Screenshot](https://github.com/user-attachments/assets/a8ab748d-12d2-4b6f-9aca-867cb1091c5e)  
-
-### India Bubble Map  
-![Map Screenshot](https://github.com/user-attachments/assets/a70201db-091b-450f-ad23-0685ccc5792a)  
-⸻
-
 🛠️ Tech Stack
 
 	•	Python
