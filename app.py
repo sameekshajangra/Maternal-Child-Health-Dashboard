@@ -170,6 +170,111 @@ else:
     st.info("NFHS-4 data not available for this indicator.")
 
 # -------------------------
+# -------------------------
+# Robust Correlation Heatmap (selectable & readable)
+# -------------------------
+import textwrap
+
+st.subheader("🌡️ Correlation Between Selected Indicators")
+
+# Pivot to wide format (states x indicators)
+wide_df = df.pivot_table(index="state", columns="indicator", values=round_choice, aggfunc="mean")
+
+# List of key indicators you'd like (keep or edit these)
+key_indicators = [
+    "1. Female population age 6 years and above who ever attended school (%)",
+    "46. Mothers who received postnatal care from a doctor/nurse/LHV/ANM/midwife/other health personnel within 2 days of delivery (%)",
+    "55. Births in a private health facility that were delivered by caesarean section (%)",
+    "72. Children with diarrhoea in the 2 weeks preceding the survey taken to a health facility or health provider (%)",
+    "80. Total children age 6-23 months receiving an adequate diet (%)",
+    "97. Men age 15-49 years who are anaemic (<13.0 g/dl) (%)",
+    "88. Women who are overweight or obese (BMI ≥25.0 kg/m2) (%)",
+]
+
+# Which of the requested keys actually exist (exact-match)
+available_exact = [k for k in key_indicators if k in wide_df.columns]
+missing_exact = [k for k in key_indicators if k not in wide_df.columns]
+
+# Inform user about missing keys
+if missing_exact:
+    st.warning("Some predefined key indicators were not found and will be skipped. You can select alternatives below.")
+    with st.expander("Missing indicators (skipped)"):
+        for m in missing_exact:
+            st.write("- " + m)
+
+# If we have at least 2 exact available, use them; otherwise ask user to choose
+if len(available_exact) >= 2:
+    chosen = available_exact
+else:
+    st.info("Not enough predefined key indicators available. Please select indicators for the heatmap (choose 3-8).")
+    # show top available columns for ease
+    options = list(wide_df.columns)
+    default = options[:6] if len(options) >= 6 else options
+    chosen = st.multiselect("Choose indicators to include (min 2)", options=options, default=default)
+
+# Ensure user chose at least 2
+if not chosen or len(chosen) < 2:
+    st.warning("Select at least 2 indicators to display a correlation heatmap.")
+else:
+    # Subset and drop indicator-columns with too many missing values
+    # keep columns with at least 50% non-NA (adjust thresh as needed)
+    thresh = int(len(wide_df) * 0.5)
+    subset = wide_df[chosen].dropna(axis=1, thresh=thresh)
+
+    if subset.shape[1] < 2:
+        st.warning("After removing columns with too many missing values, there are fewer than 2 indicators left. Try selecting different indicators.")
+    else:
+        # compute correlation
+        corr = subset.corr().round(2)
+
+        # shorten long labels for display
+        def short(s, width=40):
+            return textwrap.shorten(s, width=width, placeholder="...")
+
+        short_map = {col: short(col, width=40) for col in corr.columns}
+        corr_display = corr.copy()
+        corr_display.columns = [short_map[c] for c in corr_display.columns]
+        corr_display.index = corr_display.columns
+
+        import plotly.graph_objects as go
+        # create heatmap with annotations
+        z = corr_display.values
+        x = list(corr_display.columns)
+        y = list(corr_display.index)
+
+        fig_heat = go.Figure(data=go.Heatmap(
+            z=z,
+            x=x,
+            y=y,
+            colorscale="RdYlBu_r",
+            zmin=-1, zmax=1,
+            colorbar=dict(title="corr", tickformat=".2f")
+        ))
+
+        # add text annotations inside cells
+        annotations = []
+        for i in range(len(y)):
+            for j in range(len(x)):
+                annotations.append(
+                    dict(
+                        x=x[j], y=y[i],
+                        text=str(z[i][j]),
+                        showarrow=False,
+                        font=dict(color="black", size=10)
+                    )
+                )
+        fig_heat.update_layout(
+            title=f"Correlation of Selected Indicators ({'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4'})",
+            xaxis=dict(tickangle=30),
+            yaxis=dict(autorange="reversed"),
+            annotations=annotations,
+            width=900,
+            height=700,
+            margin=dict(l=120, r=40, t=80, b=140)
+        )
+
+        st.plotly_chart(fig_heat, use_container_width=False)
+        st.success("✅ Heatmap ready. Higher positive values indicate indicators that move together; negative values indicate inverse relations.")
 
 # -------------------------
 # Bubble Map of India (with Outline)
