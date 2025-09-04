@@ -112,6 +112,7 @@ if {"nfhs4_total", "nfhs5_total"}.issubset(filtered.columns):
     st.download_button("⬇️ Download comparison CSV", csv_out, file_name="nfhs_comparison.csv", mime="text/csv")
 
 # -------------------------
+# -------------------------
 # Tab 2: Change Over Time (NFHS-4 → NFHS-5)
 # -------------------------
 with tabs[1]:
@@ -182,7 +183,6 @@ with tabs[1]:
             st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.info("NFHS-4 data not available for this indicator.")
-# -------------------------
 # Robust Correlation Heatmap (selectable & readable)
 # -------------------------
 import textwrap
