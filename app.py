@@ -182,14 +182,16 @@ wide_df = df.pivot_table(index="state", columns="indicator", values=round_choice
 
 # List of key indicators you'd like (keep or edit these)
 key_indicators = [
+    key_indicators = [
     "1. Female population age 6 years and above who ever attended school (%)",
     "46. Mothers who received postnatal care from a doctor/nurse/LHV/ANM/midwife/other health personnel within 2 days of delivery (%)",
     "55. Births in a private health facility that were delivered by caesarean section (%)",
     "72. Children with diarrhoea in the 2 weeks preceding the survey taken to a health facility or health provider (%)",
-    "80. Total children age 6-23 months receiving an adequate diet (%)",
-    "97. Men age 15-49 years who are anaemic (<13.0 g/dl) (%)",
-    "88. Women who are overweight or obese (BMI ≥25.0 kg/m2) (%)",
+    "80. Total children age 6-23 months receiving an adequate diet16, 17  (%)",
+    "97. Men age 15-49 years who are anaemic (<13.0 g/dl)22 (%)",
+    "88. Women who are overweight or obese (BMI ≥25.0 kg/m2)21 (%)"
 ]
+
 
 # Which of the requested keys actually exist (exact-match)
 available_exact = [k for k in key_indicators if k in wide_df.columns]
