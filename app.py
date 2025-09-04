@@ -232,16 +232,38 @@ with tabs[1]:
     else:
         st.info("NFHS-4 data not available for this indicator.")
 
+# -------------------------
 # State Profile Dashboard
 # -------------------------
 st.subheader(f"📍 State Profile: {selected_state}")
 
 if not state_data.empty:
-    # Show basic indicators table for this state
-    st.markdown("### Key Indicators (NFHS-5 vs NFHS-4)")
-    st.dataframe(state_data[["indicator", "nfhs4_total", "nfhs5_total"]].reset_index(drop=True))
+    # ---- Card-style Key Stats ----
+    st.markdown("### 🧾 Key Stats (NFHS-5 vs NFHS-4)")
 
-    # Mini chart comparing NFHS-4 vs NFHS-5 across all indicators
+    # Pick 3–4 headline indicators to display as cards
+    key_stats = state_data[state_data["indicator"].isin([
+        "50. Institutional births (%)",
+        "54. Births delivered by caesarean section (%)",
+        "81. Children under 5 years who are stunted (height-for-age)18 (%)",
+        "95. All women age 15-49 years who are anaemic22 (%)"
+    ])]
+
+    cols = st.columns(len(key_stats))
+    for col, (_, row) in zip(cols, key_stats.iterrows()):
+        col.markdown(
+            f"""
+            <div style="background-color:#f9f9f9; padding:15px; border-radius:12px; 
+                        text-align:center; box-shadow:2px 2px 8px rgba(0,0,0,0.1);">
+                <h4 style="color:#333; margin-bottom:5px;">{row['indicator']}</h4>
+                <p style="margin:0; color:#2c7;">NFHS-5: <b>{row['nfhs5_total']}</b></p>
+                <p style="margin:0; color:#888;">NFHS-4: {row['nfhs4_total']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # ---- Progress Bar Chart ----
     st.markdown("### 📈 Progress Over Time (NFHS-4 → NFHS-5)")
     fig_state = px.bar(
         state_data,
@@ -250,8 +272,9 @@ if not state_data.empty:
         barmode="group",
         title=f"{selected_state} — NFHS-4 vs NFHS-5",
         labels={"value": "Value", "indicator": "Indicator"},
+        color_discrete_map={"nfhs4_total": "#1f77b4", "nfhs5_total": "#ff7f0e"}
     )
-    fig_state.update_layout(xaxis_tickangle=-45, height=500)
+    fig_state.update_layout(xaxis_tickangle=-45, height=550)
     st.plotly_chart(fig_state, use_container_width=True)
 
 else:
