@@ -170,6 +170,32 @@ else:
     st.info("NFHS-4 data not available for this indicator.")
 
 # -------------------------
+# Correlation Heatmap (across indicators)
+# -------------------------
+st.subheader("📊 Correlation Between Indicators")
+
+# Pivot data to wide format: states as rows, indicators as columns
+wide_df = df.pivot_table(index="state", columns="indicator", values=round_choice, aggfunc="mean")
+
+# Drop columns with too many missing values
+wide_df = wide_df.dropna(axis=1, thresh=len(wide_df) - 5)
+
+if not wide_df.empty:
+    corr = wide_df.corr().round(2)
+
+    fig_heat = px.imshow(
+        corr,
+        text_auto=True,
+        color_continuous_scale="RdBu_r",
+        title=f"Correlation of Indicators ({'NFHS-5' if round_choice=='nfhs5_total' else 'NFHS-4'})"
+    )
+    st.plotly_chart(fig_heat, use_container_width=True)
+
+    st.info("A high positive correlation means two indicators improve together (e.g., female literacy & institutional deliveries). A negative correlation means trade-offs.")
+else:
+    st.warning("Not enough data to compute correlation heatmap.")
+
+# -------------------------
 # Bubble Map of India (with Outline)
 # -------------------------
 st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
