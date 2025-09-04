@@ -113,6 +113,44 @@ if {"nfhs4_total", "nfhs5_total"}.issubset(filtered.columns):
 
 # -------------------------
 # -------------------------
+# Unified Insights Section with Tabs
+# -------------------------
+st.subheader("📌 Insights")
+
+# Create two tabs
+tabs = st.tabs(["📊 Current Snapshot (NFHS-5)", "⏳ Change Over Time (NFHS-4 → NFHS-5)"])
+
+# -------------------------
+# Tab 1: Current Snapshot (NFHS-5)
+# -------------------------
+with tabs[0]:
+    if "nfhs5_total" in filtered.columns:
+        top3 = filtered.nlargest(3, "nfhs5_total")[["state", "nfhs5_total"]]
+        bottom3 = filtered.nsmallest(3, "nfhs5_total")[["state", "nfhs5_total"]]
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown(
+                "<div style='background-color:#d4edda; padding:15px; border-radius:10px;'>"
+                "<h4 style='color:#155724;'>🔼 Top 3 States (NFHS-5)</h4>"
+                + "".join([f"<p><b>{row['state']}</b>: {row['nfhs5_total']}</p>" for _, row in top3.iterrows()])
+                + "</div>",
+                unsafe_allow_html=True
+            )
+
+        with col2:
+            st.markdown(
+                "<div style='background-color:#f8d7da; padding:15px; border-radius:10px;'>"
+                "<h4 style='color:#721c24;'>🔽 Bottom 3 States (NFHS-5)</h4>"
+                + "".join([f"<p><b>{row['state']}</b>: {row['nfhs5_total']}</p>" for _, row in bottom3.iterrows()])
+                + "</div>",
+                unsafe_allow_html=True
+            )
+    else:
+        st.info("NFHS-5 data not available for this indicator.")
+
+# -------------------------
 # Tab 2: Change Over Time (NFHS-4 → NFHS-5)
 # -------------------------
 with tabs[1]:
@@ -135,7 +173,7 @@ with tabs[1]:
             for _, row in top3_change.iterrows():
                 st.markdown(f"<b>{row['state']}</b>: {row['change_pct']:.2f}%", unsafe_allow_html=True)
 
-                # Mini line chart (NFHS-4 → NFHS-5)
+                # Mini line chart
                 mini_df = pd.DataFrame({
                     "Survey Round": ["NFHS-4", "NFHS-5"],
                     "Value": [row["nfhs4_total"], row["nfhs5_total"]]
@@ -164,7 +202,7 @@ with tabs[1]:
             for _, row in bottom3_change.iterrows():
                 st.markdown(f"<b>{row['state']}</b>: {row['change_pct']:.2f}%", unsafe_allow_html=True)
 
-                # Mini line chart (NFHS-4 → NFHS-5)
+                # Mini line chart
                 mini_df = pd.DataFrame({
                     "Survey Round": ["NFHS-4", "NFHS-5"],
                     "Value": [row["nfhs4_total"], row["nfhs5_total"]]
