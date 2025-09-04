@@ -182,7 +182,6 @@ wide_df = df.pivot_table(index="state", columns="indicator", values=round_choice
 
 # List of key indicators you'd like (keep or edit these)
 key_indicators = [
-    key_indicators = [
     "1. Female population age 6 years and above who ever attended school (%)",
     "46. Mothers who received postnatal care from a doctor/nurse/LHV/ANM/midwife/other health personnel within 2 days of delivery (%)",
     "55. Births in a private health facility that were delivered by caesarean section (%)",
