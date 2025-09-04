@@ -38,6 +38,13 @@ round_choice = st.sidebar.radio(
     ["nfhs5_total", "nfhs4_total"],
     format_func=lambda x: "NFHS-5 (2019–21)" if x == "nfhs5_total" else "NFHS-4 (2015–16)"
 )
+# -------------------------
+# State Profile Selector
+# -------------------------
+st.sidebar.header("🗺️ State Profile")
+selected_state = st.sidebar.selectbox("Choose a state to view profile:", sorted(df["state"].unique()))
+
+state_data = df[df["state"] == selected_state]
 
 # -------------------------
 # Bar Chart
@@ -331,6 +338,32 @@ else:
 # Debug: Show all unique indicator names in the dataset
 st.subheader("📋 Available Indicators (Debug View)")
 st.write(df["indicator"].unique())
+
+# -------------------------
+# State Profile Dashboard
+# -------------------------
+st.subheader(f"📍 State Profile: {selected_state}")
+
+if not state_data.empty:
+    # Show basic indicators table for this state
+    st.markdown("### Key Indicators (NFHS-5 vs NFHS-4)")
+    st.dataframe(state_data[["indicator", "nfhs4_total", "nfhs5_total"]].reset_index(drop=True))
+
+    # Mini chart comparing NFHS-4 vs NFHS-5 across all indicators
+    st.markdown("### 📈 Progress Over Time (NFHS-4 → NFHS-5)")
+    fig_state = px.bar(
+        state_data,
+        x="indicator",
+        y=["nfhs4_total", "nfhs5_total"],
+        barmode="group",
+        title=f"{selected_state} — NFHS-4 vs NFHS-5",
+        labels={"value": "Value", "indicator": "Indicator"},
+    )
+    fig_state.update_layout(xaxis_tickangle=-45, height=500)
+    st.plotly_chart(fig_state, use_container_width=True)
+
+else:
+    st.warning("No data available for this state.")
 # Bubble Map of India (with Outline)
 # -------------------------
 st.subheader(f"🗺️ Bubble Map — {indicator_choice}")
