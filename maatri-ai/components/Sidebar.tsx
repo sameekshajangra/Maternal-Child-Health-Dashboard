@@ -1,0 +1,573 @@
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard, Map, TrendingUp, Brain,
+  Accessibility, FileText, Sparkles, Moon, Sun, ChevronRight,
+  Activity, ChevronDown, BarChart2, Target, GitCompare, Search,
+  Gauge, AlertTriangle
+} from "lucide-react";
+
+// Dashboard dropdown sub-items
+const dashboardSubItems = [
+  { href: "/", label: "Overview", icon: LayoutDashboard },
+  { href: "/#kpis", label: "KPI Metrics", icon: Target },
+  { href: "/#trends", label: "Trend Charts", icon: BarChart2 },
+  { href: "/#priorities", label: "Priority States", icon: AlertTriangle },
+];
+
+const navItems = [
+  {
+    href: "/heatmaps",
+    label: "India Heatmaps",
+    icon: Map,
+    gradient: "linear-gradient(135deg, #10b981 0%, #34d399 100%)",
+    bgActive: "rgba(16,185,129,0.10)",
+    borderActive: "rgba(16,185,129,0.28)",
+    textActive: "#059669",
+    iconBg: "#ecfdf5",
+    hoverBg: "rgba(16,185,129,0.06)",
+  },
+  {
+    href: "/predictive",
+    label: "Predictive Analytics",
+    icon: TrendingUp,
+    gradient: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)",
+    bgActive: "rgba(245,158,11,0.10)",
+    borderActive: "rgba(245,158,11,0.32)",
+    textActive: "#d97706",
+    iconBg: "#fffbeb",
+    hoverBg: "rgba(245,158,11,0.06)",
+  },
+  {
+    href: "/explainable-ai",
+    label: "Explainable AI",
+    icon: Brain,
+    gradient: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
+    bgActive: "rgba(139,92,246,0.10)",
+    borderActive: "rgba(139,92,246,0.28)",
+    textActive: "#7c3aed",
+    iconBg: "#f5f3ff",
+    hoverBg: "rgba(139,92,246,0.06)",
+  },
+  {
+    href: "/compare",
+    label: "Compare States",
+    icon: GitCompare,
+    gradient: "linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%)",
+    bgActive: "rgba(6,182,212,0.10)",
+    borderActive: "rgba(6,182,212,0.28)",
+    textActive: "#0891b2",
+    iconBg: "#ecfeff",
+    hoverBg: "rgba(6,182,212,0.06)",
+  },
+  {
+    href: "/research",
+    label: "Research Assistant",
+    icon: Search,
+    gradient: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
+    bgActive: "rgba(236,72,153,0.10)",
+    borderActive: "rgba(236,72,153,0.28)",
+    textActive: "#db2777",
+    iconBg: "#fdf2f8",
+    hoverBg: "rgba(236,72,153,0.06)",
+  },
+  {
+    href: "/accessibility",
+    label: "Health Access",
+    icon: Gauge,
+    gradient: "linear-gradient(135deg, #f97316 0%, #fb923c 100%)",
+    bgActive: "rgba(249,115,22,0.10)",
+    borderActive: "rgba(249,115,22,0.28)",
+    textActive: "#ea580c",
+    iconBg: "#fff7ed",
+    hoverBg: "rgba(249,115,22,0.06)",
+  },
+  {
+    href: "/policy",
+    label: "Policy Insights",
+    icon: FileText,
+    gradient: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+    bgActive: "rgba(99,102,241,0.10)",
+    borderActive: "rgba(99,102,241,0.28)",
+    textActive: "#4f46e5",
+    iconBg: "#eef2ff",
+    hoverBg: "rgba(99,102,241,0.06)",
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const [isDark, setIsDark] = useState(false);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [dashOpen, setDashOpen] = useState(true); // dashboard dropdown open by default
+  const [dashHovered, setDashHovered] = useState(false);
+
+  useEffect(() => {
+    const isDarkMode = document.documentElement.classList.contains("dark");
+    setIsDark(isDarkMode);
+    // auto-open dashboard dropdown if on root
+    if (pathname === "/") setDashOpen(true);
+  }, [pathname]);
+
+  const toggleTheme = () => {
+    document.documentElement.classList.toggle("dark");
+    setIsDark((prev) => !prev);
+  };
+
+  const isDashActive = pathname === "/";
+
+  // Color tokens
+  const sidebarBg = isDark ? "#0f172a" : "#ffffff";
+  const sidebarBorder = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)";
+  const labelColor = isDark ? "#cbd5e1" : "#475569";
+  const inactiveText = isDark ? "#94a3b8" : "#6b7280";
+  const sectionLabel = isDark ? "#475569" : "#9ca3af";
+  const subItemHover = isDark ? "rgba(99,102,241,0.08)" : "rgba(99,102,241,0.05)";
+  const subItemActive = isDark ? "rgba(99,102,241,0.15)" : "rgba(99,102,241,0.08)";
+
+  return (
+    <aside
+      className="sidebar"
+      style={{
+        background: sidebarBg,
+        borderRight: `1px solid ${sidebarBorder}`,
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: "2px 0 20px rgba(0,0,0,0.04)",
+      }}
+    >
+      {/* ── Logo + Toggle Header ── */}
+      <div
+        style={{
+          padding: "18px 20px 16px",
+          borderBottom: `1px solid ${sidebarBorder}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px",
+        }}
+      >
+        <Link
+          href="/"
+          style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", minWidth: 0 }}
+        >
+          {/* Gradient Logo Icon */}
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "13px",
+              flexShrink: 0,
+              background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #10b981 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%)",
+              }}
+            />
+            <svg viewBox="0 0 24 24" fill="none" style={{ width: "22px", height: "22px", position: "relative", zIndex: 1 }}>
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                fill="white"
+              />
+              <path d="M12 15l2.5-4h-5L12 15z" fill="rgba(255,255,255,0.45)" />
+            </svg>
+            {/* Live dot */}
+            <div
+              style={{
+                position: "absolute",
+                top: "-2px",
+                right: "-2px",
+                width: "9px",
+                height: "9px",
+                borderRadius: "50%",
+                background: "#10b981",
+                border: "2px solid white",
+                boxShadow: "0 0 6px rgba(16,185,129,0.7)",
+              }}
+            />
+          </div>
+
+          {/* Brand */}
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: "17px",
+                fontWeight: 800,
+                letterSpacing: "-0.5px",
+                lineHeight: 1.1,
+                background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #10b981 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Maatri AI
+            </div>
+            <div
+              style={{
+                fontSize: "8.5px",
+                color: "#94a3b8",
+                fontWeight: 700,
+                letterSpacing: "1.4px",
+                textTransform: "uppercase",
+                marginTop: "2px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Health Intelligence
+            </div>
+          </div>
+        </Link>
+
+        {/* Dark / Light Toggle — right of logo */}
+        <button
+          onClick={toggleTheme}
+          title={isDark ? "Light Mode" : "Dark Mode"}
+          style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            flexShrink: 0,
+            background: isDark ? "#1e293b" : "#f1f5f9",
+            border: `1px solid ${isDark ? "#334155" : "#e2e8f0"}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "all 0.25s ease",
+          }}
+        >
+          {isDark ? <Sun size={14} color="#fbbf24" /> : <Moon size={14} color="#6366f1" />}
+        </button>
+      </div>
+
+      {/* ── AI Status Badge ── */}
+      <div
+        style={{
+          margin: "14px 16px 0",
+          padding: "10px 14px",
+          borderRadius: "12px",
+          background: isDark
+            ? "linear-gradient(135deg, rgba(99,102,241,0.12), rgba(16,185,129,0.08))"
+            : "linear-gradient(135deg, rgba(99,102,241,0.07), rgba(16,185,129,0.05))",
+          border: "1px solid rgba(99,102,241,0.15)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+          <Sparkles size={12} color="#6366f1" />
+          <span style={{ fontSize: "11px", fontWeight: 700, color: "#6366f1" }}>AI Engine · Live</span>
+          <div
+            style={{
+              marginLeft: "auto",
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              background: "#10b981",
+              boxShadow: "0 0 0 3px rgba(16,185,129,0.2)",
+            }}
+          />
+        </div>
+        <div style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: 500, marginTop: "3px" }}>
+          NFHS-5 · 28 States · 640 Districts
+        </div>
+      </div>
+
+      {/* ── Navigation ── */}
+      <nav style={{ flex: 1, padding: "16px 12px", overflowY: "auto" }}>
+        <div
+          style={{
+            fontSize: "9px",
+            fontWeight: 700,
+            color: sectionLabel,
+            textTransform: "uppercase",
+            letterSpacing: "1.4px",
+            padding: "0 10px",
+            marginBottom: "8px",
+          }}
+        >
+          Platform
+        </div>
+
+        {/* ── Dashboard Dropdown ── */}
+        <div style={{ marginBottom: "4px" }}>
+          <button
+            onClick={() => setDashOpen(!dashOpen)}
+            onMouseEnter={() => setDashHovered(true)}
+            onMouseLeave={() => setDashHovered(false)}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: "11px",
+              padding: "10px 13px",
+              borderRadius: "12px",
+              border: `1px solid ${isDashActive ? "rgba(99,102,241,0.28)" : "transparent"}`,
+              background: isDashActive
+                ? "rgba(99,102,241,0.10)"
+                : dashHovered
+                ? "rgba(99,102,241,0.06)"
+                : "transparent",
+              cursor: "pointer",
+              transition: "all 0.22s ease",
+              transform: dashHovered ? "translateY(-1px)" : "translateY(0)",
+              boxShadow: isDashActive ? "0 4px 16px rgba(99,102,241,0.15)" : "none",
+            }}
+          >
+            {/* Icon */}
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "10px",
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: isDashActive
+                  ? "linear-gradient(135deg, #6366f1, #818cf8)"
+                  : isDark ? "#1e293b" : "#eef2ff",
+                boxShadow: isDashActive ? "0 3px 10px rgba(99,102,241,0.3)" : "none",
+                transition: "all 0.22s ease",
+              }}
+            >
+              <LayoutDashboard
+                size={16}
+                color={isDashActive ? "#ffffff" : dashHovered ? "#4f46e5" : inactiveText}
+                strokeWidth={isDashActive ? 2.5 : 2}
+              />
+            </div>
+
+            <span
+              style={{
+                flex: 1,
+                fontSize: "13px",
+                fontWeight: isDashActive ? 700 : 500,
+                color: isDashActive ? "#4f46e5" : dashHovered ? "#4f46e5" : labelColor,
+                textAlign: "left",
+                transition: "color 0.2s ease",
+              }}
+            >
+              Dashboard
+            </span>
+
+            <ChevronDown
+              size={14}
+              color={isDashActive ? "#4f46e5" : inactiveText}
+              style={{
+                transform: dashOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.25s ease",
+                flexShrink: 0,
+              }}
+            />
+          </button>
+
+          {/* Sub-items */}
+          {dashOpen && (
+            <div
+              style={{
+                marginTop: "3px",
+                marginLeft: "22px",
+                paddingLeft: "20px",
+                borderLeft: "2px solid rgba(99,102,241,0.15)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "2px",
+              }}
+            >
+              {dashboardSubItems.map((sub) => {
+                const isSubActive = pathname === sub.href && sub.href === "/";
+                return (
+                  <Link
+                    key={sub.href}
+                    href={sub.href}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "9px",
+                      padding: "8px 12px",
+                      borderRadius: "9px",
+                      textDecoration: "none",
+                      background: isSubActive ? subItemActive : "transparent",
+                      transition: "background 0.2s ease",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => { if (!isSubActive) (e.currentTarget as HTMLElement).style.background = subItemHover; }}
+                    onMouseLeave={(e) => { if (!isSubActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                  >
+                    <sub.icon
+                      size={13}
+                      color={isSubActive ? "#4f46e5" : inactiveText}
+                      strokeWidth={isSubActive ? 2.5 : 2}
+                    />
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: isSubActive ? 600 : 400,
+                        color: isSubActive ? "#4f46e5" : inactiveText,
+                      }}
+                    >
+                      {sub.label}
+                    </span>
+                    {isSubActive && (
+                      <div
+                        style={{
+                          marginLeft: "auto",
+                          width: "5px",
+                          height: "5px",
+                          borderRadius: "50%",
+                          background: "#6366f1",
+                        }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Other Nav Items ── */}
+        {navItems.map((item, idx) => {
+          const isActive = pathname.startsWith(item.href);
+          const isHovered = hoveredIdx === idx;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "11px",
+                padding: "10px 13px",
+                borderRadius: "12px",
+                textDecoration: "none",
+                marginBottom: "4px",
+                transition: "all 0.22s ease",
+                transform: isActive || isHovered ? "translateY(-1px)" : "translateY(0)",
+                background: isActive ? item.bgActive : isHovered ? item.hoverBg : "transparent",
+                border: `1px solid ${isActive ? item.borderActive : "transparent"}`,
+                boxShadow: isActive
+                  ? `0 4px 14px ${item.borderActive}90`
+                  : isHovered
+                  ? `0 4px 10px ${item.borderActive}40`
+                  : "none",
+              }}
+            >
+              {/* Icon bubble */}
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "10px",
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: isActive ? item.gradient : isDark ? "#1e293b" : item.iconBg,
+                  boxShadow: isActive ? `0 3px 10px ${item.borderActive}` : "none",
+                  transition: "all 0.22s ease",
+                }}
+              >
+                <item.icon
+                  size={16}
+                  color={isActive ? "#ffffff" : isHovered ? item.textActive : inactiveText}
+                  strokeWidth={isActive ? 2.5 : 2}
+                />
+              </div>
+
+              {/* Label */}
+              <span
+                style={{
+                  flex: 1,
+                  fontSize: "13px",
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? item.textActive : isHovered ? item.textActive : labelColor,
+                  transition: "color 0.2s ease",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {item.label}
+              </span>
+
+              {isActive && (
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "6px",
+                    background: item.gradient,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <ChevronRight size={11} color="white" strokeWidth={3} />
+                </div>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* ── Data Sources ── */}
+      <div
+        style={{
+          margin: "0 12px 12px",
+          padding: "12px 14px",
+          borderRadius: "12px",
+          background: isDark ? "rgba(30,41,59,0.7)" : "#f8fafc",
+          border: `1px solid ${isDark ? "#1e293b" : "#f1f5f9"}`,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
+          <Activity size={12} color="#10b981" />
+          <span style={{ fontSize: "10.5px", fontWeight: 700, color: isDark ? "#94a3b8" : "#475569" }}>
+            Data Sources
+          </span>
+        </div>
+        {["NFHS-5 (2019–21)", "SRS 2018–20", "WHO SEARO", "MoHFW India"].map((src) => (
+          <div key={src} style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "5px" }}>
+            <div
+              style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#cbd5e1", flexShrink: 0 }}
+            />
+            <span style={{ fontSize: "10px", color: isDark ? "#64748b" : "#94a3b8", fontWeight: 500 }}>
+              {src}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Footer ── */}
+      <div
+        style={{
+          padding: "11px 20px",
+          borderTop: `1px solid ${sidebarBorder}`,
+          textAlign: "center",
+        }}
+      >
+        <span style={{ fontSize: "10px", color: "#94a3b8", fontWeight: 500 }}>
+          © 2024 Maatri AI · v2.5.0
+        </span>
+      </div>
+    </aside>
+  );
+}
