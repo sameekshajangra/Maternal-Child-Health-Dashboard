@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Map, TrendingUp, Brain,
   Accessibility, FileText, Sparkles, Moon, Sun, ChevronRight,
   Activity, ChevronDown, BarChart2, Target, GitCompare, Search,
-  Gauge, AlertTriangle
+  Gauge, AlertTriangle, Layers
 } from "lucide-react";
 
 // Dashboard dropdown sub-items
@@ -94,6 +94,17 @@ const navItems = [
     textActive: "#4f46e5",
     iconBg: "#eef2ff",
     hoverBg: "rgba(99,102,241,0.06)",
+  },
+  {
+    href: "/insights",
+    label: "Cross-Dim. Insights",
+    icon: Layers,
+    gradient: "linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)",
+    bgActive: "rgba(14,165,233,0.10)",
+    borderActive: "rgba(14,165,233,0.28)",
+    textActive: "#0284c7",
+    iconBg: "#f0f9ff",
+    hoverBg: "rgba(14,165,233,0.06)",
   },
 ];
 
@@ -281,7 +292,7 @@ export default function Sidebar() {
           />
         </div>
         <div style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: 500, marginTop: "3px" }}>
-          NFHS-5 · 28 States · 640 Districts
+          NFHS-5 · SDG Index · Air Quality · 7 Layers
         </div>
       </div>
 
@@ -544,7 +555,7 @@ export default function Sidebar() {
             Data Sources
           </span>
         </div>
-        {["NFHS-5 (2019–21)", "SRS 2018–20", "WHO SEARO", "MoHFW India"].map((src) => (
+        {["NFHS-5 (2019–21)", "SDG India Index", "CPCB Air Quality", "MoHFW India", "Census 2011", "NITI Aayog MPI"].map((src) => (
           <div key={src} style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "5px" }}>
             <div
               style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#cbd5e1", flexShrink: 0 }}
