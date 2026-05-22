@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Map, TrendingUp, Brain,
   Accessibility, FileText, Sparkles, Moon, Sun, ChevronRight,
   Activity, ChevronDown, BarChart2, Target, GitCompare, Search,
-  Gauge, AlertTriangle, Layers
+  Gauge, AlertTriangle, Layers, Sliders
 } from "lucide-react";
 
 // Dashboard dropdown sub-items
@@ -106,6 +106,17 @@ const navItems = [
     textActive: "#0284c7",
     iconBg: "#f0f9ff",
     hoverBg: "rgba(14,165,233,0.06)",
+  },
+  {
+    href: "/simulator",
+    label: "Intervention Simulator",
+    icon: Sliders,
+    gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    bgActive: "rgba(16,185,129,0.10)",
+    borderActive: "rgba(16,185,129,0.28)",
+    textActive: "#059669",
+    iconBg: "#ecfdf5",
+    hoverBg: "rgba(16,185,129,0.06)",
   },
 ];
 
@@ -302,7 +313,7 @@ export default function Sidebar() {
       </div>
 
       {/* ── Navigation ── */}
-      <nav style={{ flex: 1, padding: "16px 12px", overflowY: "auto" }}>
+      <nav style={{ flex: 1, padding: "var(--spacing)", display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto" }}>
         <div
           style={{
             fontSize: "9px",
@@ -320,26 +331,27 @@ export default function Sidebar() {
         {/* ── Dashboard Dropdown ── */}
         <div style={{ marginBottom: "4px" }}>
           <button
+            aria-expanded={dashOpen}
+            aria-controls="dashboard-subitems"
             onClick={() => setDashOpen(!dashOpen)}
             onMouseEnter={() => setDashHovered(true)}
             onMouseLeave={() => setDashHovered(false)}
+            className={`transition-all duration-200 ${!isDashActive && dashHovered ? "glass-card" : ""}`}
             style={{
               width: "100%",
               display: "flex",
               alignItems: "center",
-              gap: "11px",
-              padding: "10px 13px",
+              gap: "12px",
+              padding: isDashActive || dashHovered ? "10px 14px" : "10px 14px",
               borderRadius: "12px",
-              border: `1px solid ${isDashActive ? "rgba(99,102,241,0.28)" : "transparent"}`,
+              border: `1px solid ${isDashActive ? "rgba(99,102,241,0.4)" : "transparent"}`,
+              borderLeft: isDashActive ? "4px solid #4f46e5" : "4px solid transparent",
               background: isDashActive
-                ? "rgba(99,102,241,0.10)"
-                : dashHovered
-                ? "rgba(99,102,241,0.06)"
+                ? "linear-gradient(90deg, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0.05) 100%)"
                 : "transparent",
               cursor: "pointer",
-              transition: "all 0.22s ease",
               transform: dashHovered ? "translateY(-1px)" : "translateY(0)",
-              boxShadow: isDashActive ? "0 4px 16px rgba(99,102,241,0.15)" : "none",
+              boxShadow: isDashActive ? "0 4px 16px rgba(99,102,241,0.2)" : "none",
             }}
           >
             {/* Icon */}
@@ -397,7 +409,6 @@ export default function Sidebar() {
                 marginTop: "3px",
                 marginLeft: "22px",
                 paddingLeft: "20px",
-                borderLeft: "2px solid rgba(99,102,241,0.15)",
                 borderLeft: "1px solid rgba(99,102,241,0.2)",
                 display: "flex",
                 flexDirection: "column",
@@ -405,7 +416,7 @@ export default function Sidebar() {
               }}
             >
               {dashboardSubItems.map((sub) => {
-                const isSubActive = hash === sub.href;
+                const isSubActive = pathname === "/" && (sub.href === "/" ? !hash : hash && sub.href.endsWith(hash));
                 return (
                   <Link
                     key={sub.href}
@@ -413,9 +424,9 @@ export default function Sidebar() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: "10px",
-                      padding: "7px 12px",
-                      borderRadius: "8px",
+                      gap: "12px",
+                      padding: "10px 14px",
+                      borderRadius: "10px",
                       textDecoration: "none",
                       color: isSubActive ? "#4f46e5" : inactiveText,
                       background: isSubActive ? "rgba(99,102,241,0.08)" : "transparent",
@@ -442,20 +453,24 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
+              className={`transition-all duration-200 ${!isActive && isHovered ? "glass-card" : ""}`}
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "14px",
-                padding: "10px 13px",
+                gap: "12px",
+                padding: "10px 14px",
                 borderRadius: "12px",
                 textDecoration: "none",
-                marginBottom: "8px",
-                transition: "all 0.22s ease",
+                marginBottom: "4px",
                 transform: isActive || isHovered ? "translateY(-1px)" : "translateY(0)",
-                background: isActive ? item.bgActive : isHovered ? item.hoverBg : "transparent",
+                background: isActive 
+                  ? `linear-gradient(90deg, ${item.bgActive.replace('0.10', '0.15')} 0%, ${item.bgActive.replace('0.10', '0.05')} 100%)` 
+                  : "transparent",
                 border: `1px solid ${isActive ? item.borderActive : "transparent"}`,
+                borderLeft: isActive ? `4px solid ${item.textActive}` : "4px solid transparent",
                 boxShadow: isActive
                   ? `0 4px 14px ${item.borderActive}90`
                   : isHovered
@@ -478,20 +493,6 @@ export default function Sidebar() {
                   transition: "all 0.22s ease",
                 }}
               >
-                {(Object.keys(metricConfig) as Metric[]).map(m => (
-                  <button
-                    key={m}
-                    onClick={() => setMetric(m)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer ${
-                      metric === m
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-650 text-white shadow-sm"
-                        : "bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700/80 text-slate-650 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                    }`}
-                  >
-                    {metricConfig[m].icon}
-                    {metricConfig[m].shortLabel}
-                  </button>
-                ))}
                 <item.icon
                   size={16}
                   color={isActive ? "#ffffff" : isHovered ? item.textActive : inactiveText}

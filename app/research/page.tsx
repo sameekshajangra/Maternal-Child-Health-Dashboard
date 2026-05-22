@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { stateHealthData } from "@/lib/data";
-import { Search, Sparkles, AlertCircle, BrainCircuit, TrendingUp, BarChart2, Lightbulb } from "lucide-react";
+import { Search, Sparkles, AlertCircle, BrainCircuit, TrendingUp, BarChart2, Lightbulb, ArrowRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const EXAMPLE_QUERIES = [
@@ -156,63 +156,115 @@ export default function ResearchAssistant() {
           </p>
         </div>
 
-        {/* Search Box */}
-        <div className="glass-card p-6 shadow-md">
-          <form onSubmit={handleSearch}>
-            <div className="relative flex items-center">
-              <Search size={18} className="absolute left-4 text-slate-450 dark:text-slate-500 pointer-events-none" />
+        {/* Search Box - Redesigned for Premium Feel */}
+        <div className="glass-card p-8 md:p-10 shadow-xl shadow-pink-900/5 relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
+          
+          <form onSubmit={handleSearch} className="relative z-10">
+            <div className="relative flex items-center group">
+              <div className="absolute left-5 flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 group-focus-within:bg-pink-100 dark:group-focus-within:bg-pink-900/40 group-focus-within:text-pink-500 transition-colors duration-300">
+                <Search size={18} className="pointer-events-none" />
+              </div>
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="E.g. Show states with highest maternal mortality..."
-                className="w-full pl-12 pr-36 py-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 focus:border-pink-500 dark:focus:border-pink-500 focus:ring-1 focus:ring-pink-500 rounded-xl text-slate-800 dark:text-slate-100 outline-none text-sm font-semibold transition-all"
+                className="w-full pl-14 md:pl-16 pr-[130px] md:pr-[180px] py-5 md:py-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 focus:border-pink-500/80 dark:focus:border-pink-500/60 focus:ring-4 focus:ring-pink-500/10 rounded-2xl text-slate-800 dark:text-slate-100 outline-none text-sm md:text-lg font-semibold transition-all shadow-inner placeholder:text-slate-400 placeholder:font-medium"
               />
               <button
                 type="submit"
                 disabled={isSearching || !query.trim()}
-                className={`absolute right-2 px-6 py-2.5 font-bold text-xs rounded-lg transition-all shadow-md ${
+                className={`absolute right-3 px-8 py-4 font-bold text-sm rounded-xl transition-all duration-300 shadow-lg ${
                   isSearching || !query.trim()
-                    ? "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-pink-500/15 cursor-pointer"
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none"
+                    : "bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white hover:shadow-pink-500/25 hover:-translate-y-0.5 cursor-pointer"
                 }`}
               >
-                {isSearching ? "Analyzing..." : "Analyze →"}
+                {isSearching ? (
+                  <span className="flex items-center gap-2"><BrainCircuit size={16} className="animate-spin" /> Analyzing...</span>
+                ) : (
+                  <span className="flex items-center gap-2">Analyze <ArrowRight size={16} /></span>
+                )}
               </button>
             </div>
           </form>
 
           {/* Quick Prompts */}
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest self-center mr-1">Try:</span>
-            {EXAMPLE_QUERIES.map((p) => (
-              <button
-                key={p}
-                onClick={() => setQuery(p)}
-                className="text-xs px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-850 text-slate-655 dark:text-slate-350 hover:bg-pink-50 dark:hover:bg-pink-950/20 hover:text-pink-600 dark:hover:text-pink-400 hover:border-pink-200 dark:hover:border-pink-900 transition-all duration-200 font-bold cursor-pointer"
-              >
-                {p}
-              </button>
-            ))}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-8 pt-6 border-t border-slate-100/80 dark:border-slate-800/80 relative z-10">
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest shrink-0 flex items-center gap-1.5">
+              <Lightbulb size={12} className="text-amber-500" /> Suggested Queries
+            </span>
+            <div className="flex flex-wrap gap-2.5">
+              {EXAMPLE_QUERIES.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setQuery(p)}
+                  className="text-[11.5px] px-4 py-2 rounded-full bg-white dark:bg-slate-850 border border-slate-200/80 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-350 hover:bg-pink-50 dark:hover:bg-pink-950/30 hover:text-pink-600 dark:hover:text-pink-400 hover:border-pink-200 dark:hover:border-pink-900/50 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold cursor-pointer"
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Empty State */}
+        {/* Beautiful Colored Flowchart (Empty State) */}
         {!results && !isSearching && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: <Search size={22} className="text-pink-500" />, title: "Natural Language", desc: "Ask in plain English — no filters or dropdowns needed." },
-              { icon: <BarChart2 size={22} className="text-indigo-500" />, title: "Instant Charts", desc: "AI generates visual comparisons from your query automatically." },
-              { icon: <Lightbulb size={22} className="text-amber-500" />, title: "Expert Insights", desc: "Every result comes with a data-backed public health interpretation." },
-            ].map((card, i) => (
-              <div key={i} className="glass-card p-6 text-center shadow-sm hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                  {card.icon}
+          <div className="mt-8 relative z-10">
+            <h3 className="text-center font-display font-bold text-slate-700 dark:text-slate-200 text-sm mb-8 tracking-widest uppercase">How It Works</h3>
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 relative">
+              {/* Connecting Line (Desktop) */}
+              <div className="hidden md:block absolute top-1/2 left-10 right-10 h-1 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0" />
+              {/* Connecting Line (Mobile) */}
+              <div className="md:hidden absolute top-10 bottom-10 left-1/2 w-1 bg-slate-200 dark:bg-slate-800 -translate-x-1/2 z-0" />
+
+              {/* Step 1 */}
+              <div className="relative z-10 flex-1 flex flex-col items-center text-center p-4 group">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-white flex items-center justify-center shadow-lg shadow-pink-500/30 mb-4 transform group-hover:-translate-y-1 transition-all duration-300">
+                  <Search size={28} />
                 </div>
-                <div className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1.5">{card.title}</div>
-                <div className="text-slate-500 dark:text-slate-400 text-[12.5px] leading-relaxed font-medium">{card.desc}</div>
+                <div className="glass-card p-5 w-full max-w-[240px] text-center border-t-4 border-t-pink-400">
+                  <div className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1.5">1. Natural Language</div>
+                  <div className="text-slate-500 dark:text-slate-400 text-[11.5px] leading-relaxed font-medium">Ask in plain English — no filters or coding needed.</div>
+                </div>
               </div>
-            ))}
+
+              {/* Arrow (Desktop) */}
+              <div className="hidden md:flex relative z-10 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 items-center justify-center text-slate-400 dark:text-slate-500">
+                <ArrowRight size={14} />
+              </div>
+
+              {/* Step 2 */}
+              <div className="relative z-10 flex-1 flex flex-col items-center text-center p-4 group">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 transform group-hover:-translate-y-1 transition-all duration-300">
+                  <BarChart2 size={28} />
+                </div>
+                <div className="glass-card p-5 w-full max-w-[240px] text-center border-t-4 border-t-indigo-400">
+                  <div className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1.5">2. Instant Charts</div>
+                  <div className="text-slate-500 dark:text-slate-400 text-[11.5px] leading-relaxed font-medium">AI instantly generates visual comparisons from your query.</div>
+                </div>
+              </div>
+
+              {/* Arrow (Desktop) */}
+              <div className="hidden md:flex relative z-10 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 items-center justify-center text-slate-400 dark:text-slate-500">
+                <ArrowRight size={14} />
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative z-10 flex-1 flex flex-col items-center text-center p-4 group">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 mb-4 transform group-hover:-translate-y-1 transition-all duration-300">
+                  <Lightbulb size={28} />
+                </div>
+                <div className="glass-card p-5 w-full max-w-[240px] text-center border-t-4 border-t-amber-400">
+                  <div className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1.5">3. Expert Insights</div>
+                  <div className="text-slate-500 dark:text-slate-400 text-[11.5px] leading-relaxed font-medium">Every result includes data-backed public health interpretation.</div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

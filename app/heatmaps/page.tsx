@@ -94,22 +94,30 @@ export default function HeatmapsPage() {
           </p>
         </div>
 
-        {/* Metric Selector */}
-        <div className="flex flex-wrap gap-2 mb-8 relative z-10">
-          {(Object.keys(metricConfig) as Metric[]).map(m => (
-            <button
-              key={m}
-              onClick={() => setMetric(m)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-                metric === m
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-650 text-white shadow-sm"
-                  : "bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700/80 text-slate-650 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-              }`}
-            >
-              {metricConfig[m].icon}
-              {metricConfig[m].shortLabel}
-            </button>
-          ))}
+        {/* Refined Pill-Based Metric Selector */}
+        <div className="mb-10 relative z-10 w-full overflow-x-auto pb-4 scrollbar-hide">
+          <div className="glass-card p-2 inline-flex items-center gap-2 min-w-max bg-white/50 dark:bg-slate-900/50">
+            {(Object.keys(metricConfig) as Metric[]).map((m) => {
+              const isActive = metric === m;
+              return (
+                <button
+                  key={m}
+                  onClick={() => setMetric(m)}
+                  className={`
+                    flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 cursor-pointer
+                    ${isActive 
+                      ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/30 scale-[1.02]" 
+                      : "bg-transparent text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm"}
+                  `}
+                >
+                  <span className={`${isActive ? "animate-pulse" : "opacity-70"}`}>
+                    {metricConfig[m].icon}
+                  </span>
+                  <span>{metricConfig[m].shortLabel}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 relative z-10">

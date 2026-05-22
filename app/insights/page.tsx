@@ -5,7 +5,8 @@ import { stateHealthData } from "@/lib/data";
 import { 
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis 
 } from "recharts";
-import { Sparkles, Activity, Layers, ArrowRight, BrainCircuit } from "lucide-react";
+import { Sparkles, Activity, Layers, ArrowRight, BrainCircuit, Download } from "lucide-react";
+import { exportToPdf } from "@/lib/exportPdf";
 
 // Definitions for the Analyze (Y-axis) dropdown
 const analyzeOptions = [
@@ -62,7 +63,20 @@ export default function InsightsPage() {
       specificInsight = "Policy tracking shows states with better overall SDG progress consistently outperform the national average in maternal-child health metrics.";
     }
 
-    return { correlationText, specificInsight };
+    let policyImplication = "";
+    if (currentCorrelate.id === "literacyRate") {
+      policyImplication = "Policy lever: Allocate conditional cash transfers tied to girls' secondary education completion rates, particularly in Bihar, Rajasthan and UP.";
+    } else if (currentCorrelate.id === "pm25") {
+      policyImplication = "Policy lever: Prioritise clean cooking fuel subsidies (PM Ujjwala Yojana expansion) and enforce vehicle emission standards in high-PM2.5 districts.";
+    } else if (currentCorrelate.id === "povertyIndex") {
+      policyImplication = "Policy lever: Combine JSY/JSSK maternity benefit schemes with direct nutrition transfers for high-MPI districts to break poverty-health nexus.";
+    } else if (currentCorrelate.category === "Infrastructure") {
+      policyImplication = "Policy lever: Apply differential resource allocation formula placing additional PHC units and ambulance hubs in sub-25th-percentile states.";
+    } else {
+      policyImplication = "Policy lever: Integrate health outcome KPIs into state SDG fund disbursement criteria to create incentive-aligned governance.";
+    }
+
+    return { correlationText, specificInsight, policyImplication };
   };
 
   const insights = generateInsights();
@@ -203,7 +217,7 @@ export default function InsightsPage() {
           </div>
 
           {/* AI Insights Panel */}
-          <div className="glass-card bg-gradient-to-br from-indigo-950 to-slate-900 dark:from-slate-950 dark:to-slate-900 border-none p-6 md:p-8 text-white relative overflow-hidden flex flex-col justify-between">
+          <div id="ai-insight-panel" className="glass-card bg-gradient-to-br from-indigo-950 to-slate-900 dark:from-slate-950 dark:to-slate-900 border-none p-6 md:p-8 text-white relative overflow-hidden flex flex-col justify-between">
             {/* Decorative mesh/blur */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
             <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
@@ -233,13 +247,28 @@ export default function InsightsPage() {
                     {insights.specificInsight}
                   </p>
                 </div>
+
+                <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-2xl p-5 border border-emerald-400/20 backdrop-blur-sm shadow-inner">
+                  <div className="flex items-start gap-3">
+                    <span className="text-emerald-300 text-base shrink-0">💡</span>
+                    <div>
+                      <div className="text-emerald-200 text-[10px] font-bold uppercase tracking-widest mb-1.5">Potential Policy Implication</div>
+                      <p className="text-emerald-100 font-medium leading-relaxed text-[13px]">
+                        {insights.policyImplication}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
             <div className="relative z-10 mt-auto">
-              <button className="w-full bg-white text-indigo-950 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer text-sm">
+              <button 
+                onClick={() => exportToPdf('ai-insight-panel', 'maatri-policy-insight.pdf')}
+                className="w-full bg-white text-indigo-950 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer text-sm"
+              >
+                <Download className="w-4 h-4" />
                 Generate Policy Brief
-                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>

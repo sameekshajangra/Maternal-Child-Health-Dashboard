@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { riskProfiles, stateHealthData } from "@/lib/data";
-import { Brain, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Brain, SlidersHorizontal, Sparkles, TrendingDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, ReferenceLine, Legend, AreaChart, Area
@@ -146,17 +147,44 @@ export default function PredictivePage() {
                 />
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-amber-50/40 dark:bg-amber-950/10 border border-amber-100 dark:border-amber-900/30 text-center">
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Projected National MMR</div>
-              <div className="text-5xl font-display font-bold text-amber-500 mb-2 leading-none">{Math.round(projectedMmr)}</div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400 h-5">
-                {projectedMmr < baseMmr ? (
-                  <span className="text-emerald-500">↓ {Math.round(baseMmr - projectedMmr)} points improvement</span>
-                ) : (
-                  <span className="text-slate-400">Baseline Level</span>
-                )}
+            <div className="p-6 rounded-2xl bg-amber-50/40 dark:bg-amber-950/10 border border-amber-100 dark:border-amber-900/30 text-center flex flex-col justify-center">
+              <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Projected National MMR</div>
+              
+              <div className="h-16 flex items-center justify-center overflow-hidden">
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={Math.round(projectedMmr)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
+                    className="text-6xl font-display font-bold text-amber-500 leading-none"
+                  >
+                    {Math.round(projectedMmr)}
+                  </motion.div>
+                </AnimatePresence>
               </div>
-              <div className="mt-4 text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed pt-3 border-t border-amber-100/50 dark:border-amber-900/20">
+
+              <div className="text-xs font-bold text-slate-500 dark:text-slate-400 h-6 mt-4 flex items-center justify-center">
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={projectedMmr < baseMmr ? 'improved' : 'baseline'}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {projectedMmr < baseMmr ? (
+                      <span className="text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+                        <TrendingDown size={12} /> {Math.round(baseMmr - projectedMmr)} points improvement
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">Baseline Level</span>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              <div className="mt-6 text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed pt-4 border-t border-amber-100/50 dark:border-amber-900/20">
                 *Model uses multiple regression based on NFHS-5 data to estimate impact of interventions.
               </div>
             </div>

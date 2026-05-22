@@ -1,7 +1,7 @@
 "use client";
 import { ruralUrbanData } from "@/lib/data";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-import { Accessibility, MapPin, Users, TrendingUp, AlertCircle, Sparkles } from "lucide-react";
+import { Accessibility, MapPin, Users, TrendingUp, AlertCircle, Sparkles, Wallet, Truck, BookOpen } from "lucide-react";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
@@ -110,42 +110,65 @@ export default function AccessibilityPage() {
         <div className="glass-card p-6 bg-white dark:bg-slate-800 dark:border-slate-700 shadow-sm">
           <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1">Healthcare Barriers by Residency</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 font-medium">% women reporting each barrier as a problem</p>
-          <div className="space-y-4">
-            {barrierData.map((b, i) => (
-              <div key={i}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{b.barrier}</span>
-                  <span className={`tag ${b.severity === "critical" ? "tag-red" : b.severity === "high" ? "tag-yellow" : "tag-blue"}`} style={{ fontSize: "8px" }}>
-                    {b.severity}
-                  </span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <span className="text-[10px] text-indigo-500 dark:text-indigo-400 w-8 text-right font-semibold">{b.rural}%</span>
-                  <div className="flex-1 relative h-5 flex items-center">
-                    <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 rounded-full" />
-                    {/* Rural bar */}
-                    <div
-                      className="absolute left-0 h-3 rounded-full"
-                      style={{ width: `${b.rural}%`, background: "linear-gradient(90deg,#6366f1,#8b5cf6)", opacity: 0.8 }}
-                    />
-                    {/* Urban bar */}
-                    <div
-                      className="absolute left-0 h-1 rounded-full"
-                      style={{ width: `${b.urban}%`, background: "#06b6d4", opacity: 0.9, bottom: 3 }}
-                    />
+          <div className="space-y-5 mt-6">
+            {barrierData.map((b, i) => {
+              const Icon = b.barrier === "Distance to facility" ? MapPin :
+                           b.barrier === "Cost of services" ? Wallet :
+                           b.barrier === "No female provider" ? Users :
+                           b.barrier === "Permission to go" ? AlertCircle :
+                           b.barrier === "Transport unavailable" ? Truck : BookOpen;
+              
+              const iconColorClass = b.barrier === "Distance to facility" ? "text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10" :
+                                     b.barrier === "Cost of services" ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10" :
+                                     b.barrier === "No female provider" ? "text-pink-500 bg-pink-50 dark:bg-pink-500/10" :
+                                     b.barrier === "Permission to go" ? "text-amber-500 bg-amber-50 dark:bg-amber-500/10" :
+                                     b.barrier === "Transport unavailable" ? "text-orange-500 bg-orange-50 dark:bg-orange-500/10" :
+                                     "text-cyan-500 bg-cyan-50 dark:bg-cyan-500/10";
+
+              return (
+                <div key={i} className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${iconColorClass}`}>
+                        <Icon size={14} />
+                      </div>
+                      <span className="text-[13px] text-slate-700 dark:text-slate-200 font-bold">{b.barrier}</span>
+                    </div>
+                    <span className={`tag ${b.severity === "critical" ? "tag-red shadow-sm border border-red-200 dark:border-red-900/40" : b.severity === "high" ? "tag-yellow" : "tag-blue"}`} style={{ fontSize: "9px" }}>
+                      {b.severity}
+                    </span>
                   </div>
-                  <span className="text-[10px] text-cyan-500 dark:text-cyan-400 w-8 font-semibold">{b.urban}%</span>
+                  
+                  {/* Staggered Dual Bar Chart */}
+                  <div className="pl-[38px] space-y-1.5">
+                    {/* Rural */}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400 w-8 font-bold uppercase tracking-wider">Rural</span>
+                      <div className="flex-1 relative h-2.5 flex items-center">
+                        <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800/80 rounded-full" />
+                        <div
+                          className="absolute left-0 h-full rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: `${b.rural}%`, background: "linear-gradient(90deg, #4f46e5, #8b5cf6)", boxShadow: "0 0 8px rgba(99,102,241,0.4)" }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-indigo-600 dark:text-indigo-300 w-8 font-black">{b.rural}%</span>
+                    </div>
+                    {/* Urban */}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-cyan-600 dark:text-cyan-500 w-8 font-bold uppercase tracking-wider">Urban</span>
+                      <div className="flex-1 relative h-2.5 flex items-center">
+                        <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800/80 rounded-full" />
+                        <div
+                          className="absolute left-0 h-full rounded-full transition-all duration-1000 ease-out delay-100"
+                          style={{ width: `${b.urban}%`, background: "linear-gradient(90deg, #06b6d4, #38bdf8)" }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-cyan-600 dark:text-cyan-400 w-8 font-black">{b.urban}%</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                <div className="w-8 h-2 rounded-full bg-indigo-500/60" />Rural
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                <div className="w-8 h-1 rounded-full bg-cyan-400/60" />Urban
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>

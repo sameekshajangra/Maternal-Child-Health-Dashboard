@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { shapFeatures } from "@/lib/data";
-import { Brain, Info, Sparkles, BarChart2, ArrowRight, Lightbulb } from "lucide-react";
+import { Brain, Info, Sparkles, BarChart2, ArrowRight, Lightbulb, AlertCircle, MapPin, Users } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -183,43 +183,104 @@ export default function ExplainableAIPage() {
 
       {activeTab === "lime" && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 relative z-10">
-          {/* LIME Explanation */}
-          <div className="glass-card p-6 bg-white dark:bg-slate-800 dark:border-slate-700 shadow-sm">
-            <div className="mb-6">
-              <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg">Local Explanation · High-Risk Case</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">LIME: how each feature pushes this specific prediction</p>
-              <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-105 dark:border-red-900/30 flex items-center justify-between">
+          {/* LIME Explanation (Redesigned) */}
+          <div className="glass-card overflow-hidden bg-white dark:bg-slate-800 dark:border-slate-700 shadow-lg relative">
+            {/* Top decorative gradient bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500" />
+            
+            <div className="p-6">
+              <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Patient: Sunita Yadav, 16y, UP</div>
-                  <div className="text-sm font-bold text-red-500 dark:text-red-400 mt-1">Predicted Risk: 92% (Critical)</div>
+                  <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg">Local Explanation · High-Risk Case</h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">LIME: Feature contributions for this specific prediction</p>
                 </div>
-                <div className="text-2xl">⚠️</div>
+                <div className="tag tag-red shadow-sm border border-red-200 dark:border-red-900/50">
+                  <AlertCircle size={12} className="mr-1.5" /> CRITICAL
+                </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              {lime_explanations.map((item, i) => (
-                <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold leading-tight">{item.feature}</span>
-                    <span className="font-bold text-sm" style={{ color: item.color === "#34d399" ? "#10b981" : item.color }}>{item.contribution}</span>
+
+              {/* Patient Profile Card */}
+              <div className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/60 dark:to-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 shadow-inner">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/40 border-2 border-red-200 dark:border-red-800/50 flex items-center justify-center flex-shrink-0 shadow-sm relative">
+                    <span className="text-xl">👩🏽</span>
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-slate-800">
+                      !
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-[10.5px] text-slate-400 dark:text-slate-500 font-medium">
-                    <ArrowRight size={11} style={{ color: item.color === "#34d399" ? "#10b981" : item.color }} />
-                    <span>This {item.direction} mortality risk</span>
-                  </div>
-                  <div className="mt-3.5 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${Math.min(100, Math.abs(parseFloat(item.contribution)) * 200)}%`,
-                        background: item.color === "#34d399" ? "#10b981" : item.color,
-                        opacity: 0.8,
-                        marginLeft: parseFloat(item.contribution) < 0 ? "auto" : "0",
-                      }}
-                    />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="font-bold text-slate-800 dark:text-white text-base">Sunita Yadav</div>
+                      <div className="text-2xl font-black text-red-500 dark:text-red-400 tracking-tighter">92<span className="text-sm text-red-400/70">%</span></div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      <span className="flex items-center gap-1"><MapPin size={10} /> Uttar Pradesh</span>
+                      <span className="flex items-center gap-1"><Users size={10} /> 16 Years</span>
+                      <span className="flex items-center gap-1"><Info size={10} /> 1st Pregnancy</span>
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="space-y-3">
+                {lime_explanations.map((item, i) => {
+                  const isPositive = parseFloat(item.contribution) > 0;
+                  const itemColor = isPositive ? item.color : "#10b981"; // Force green for negative risk
+                  const barWidth = Math.min(100, Math.abs(parseFloat(item.contribution)) * 200);
+                  
+                  return (
+                    <div key={i} className="group p-4 rounded-xl bg-white dark:bg-slate-850 border border-slate-100 dark:border-slate-750 shadow-sm hover:shadow-md transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-600">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[13px] text-slate-700 dark:text-slate-200 font-semibold leading-tight group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{item.feature}</span>
+                        <div className="flex flex-col items-end">
+                          <span className="font-black text-sm" style={{ color: itemColor }}>
+                            {item.contribution}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-[10.5px] text-slate-400 dark:text-slate-500 font-medium mb-3">
+                        <ArrowRight size={11} style={{ color: itemColor }} className={isPositive ? "-rotate-45" : "rotate-45"} />
+                        <span>This {item.direction} mortality risk</span>
+                      </div>
+                      
+                      {/* Bidirectional Bar visual */}
+                      <div className="relative h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center">
+                        {/* Center dividing line */}
+                        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-300 dark:bg-slate-600 z-10" />
+                        
+                        <div className="w-full h-full flex">
+                          {/* Negative side (Decreases risk) - Right-aligned within the left half */}
+                          <div className="w-1/2 h-full flex justify-end">
+                            {!isPositive && (
+                              <div
+                                className="h-full rounded-l-full animate-pulse"
+                                style={{
+                                  width: `${barWidth}%`,
+                                  background: `linear-gradient(to left, ${itemColor}, ${itemColor}80)`,
+                                }}
+                              />
+                            )}
+                          </div>
+                          
+                          {/* Positive side (Increases risk) - Left-aligned within the right half */}
+                          <div className="w-1/2 h-full flex justify-start">
+                            {isPositive && (
+                              <div
+                                className="h-full rounded-r-full"
+                                style={{
+                                  width: `${barWidth}%`,
+                                  background: `linear-gradient(to right, ${itemColor}, ${itemColor}80)`,
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

@@ -7,6 +7,8 @@ import {
 } from "recharts";
 import { kpiData, trendData, nutritionData, vaccinationData, stateHealthData } from "@/lib/data";
 import KPICardPremium from "@/components/KPICardPremium";
+import ChartWrapper from "@/components/ChartWrapper";
+import { exportToPdf } from "@/lib/exportPdf";
 import { Sparkles, Activity, Globe, Users, AlertTriangle, TrendingDown, RefreshCw, Download, ChevronRight, CheckCircle2 } from "lucide-react";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -150,7 +152,10 @@ export default function DashboardPage() {
           </div>
           <span>SYNC {lastUpdated || "00:00:00"}</span>
         </div>
-        <button className="btn-ghost text-xs py-2.5 px-4 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+        <button 
+          onClick={() => exportToPdf('dashboard-content', 'maatri-dashboard-export.pdf')}
+          className="btn-ghost text-xs py-2.5 px-4 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+        >
           <Download size={14} />
           Export Data
         </button>
@@ -161,7 +166,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stacking Layout: Flex Column */}
-      <div className="flex flex-col gap-10">
+      <div id="dashboard-content" className="flex flex-col gap-10">
 
         {/* Section 1: KPI Cards */}
         <section id="kpis">
@@ -173,7 +178,7 @@ export default function DashboardPage() {
               <div
                 key={key}
                 onClick={() => setActiveMetric(key)}
-                className="cursor-pointer premium-card"
+                className="cursor-pointer"
               >
                 <KPICardPremium
                   label={kpi.label}
@@ -228,21 +233,22 @@ export default function DashboardPage() {
           </div>
 
           {/* Trend Chart */}
-          <div className="xl:w-2/3 premium-card p-6 overflow-hidden relative bg-white dark:bg-slate-800 dark:border-slate-700">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10">
-              <div>
-                <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg tracking-wide flex items-center gap-2">
-                  <Activity size={18} className="text-indigo-500" />
-                  Longitudinal Health Trajectory
-                </h2>
-                <p className="text-[11px] text-slate-400 mt-1 tracking-wider uppercase font-bold">NFHS-3 → NFHS-5 → 2030 SDG Projections</p>
-              </div>
+          <ChartWrapper
+            className="xl:w-2/3"
+            title={
+              <>
+                <Activity size={18} className="text-indigo-500" />
+                Longitudinal Health Trajectory
+              </>
+            }
+            subtitle="NFHS-3 → NFHS-5 → 2030 SDG Projections"
+            actions={
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20">
                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 pulse-ring" />
                 <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Predictive Model Active</span>
               </div>
-            </div>
-            
+            }
+          >
             <div className="h-[400px] w-full mt-2 relative z-10">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trendData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
@@ -276,16 +282,17 @@ export default function DashboardPage() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </ChartWrapper>
         </section>
 
         {/* Section 3: State-level Breakdown */}
         <section id="priorities" className="flex flex-col lg:flex-row gap-8">
           {/* Nutrition Chart */}
-          <div className="lg:w-1/2 glass-card p-8 relative overflow-hidden bg-white dark:bg-slate-800 dark:border-slate-700 shadow-sm">
-            <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1 relative z-10 tracking-wide">Child Malnutrition by State</h2>
-            <p className="text-[12px] text-slate-400 mb-8 relative z-10 uppercase tracking-wider font-bold">NFHS-5 Under-5 children (%)</p>
-            
+          <ChartWrapper
+            className="lg:w-1/2"
+            title="Child Malnutrition by State"
+            subtitle="NFHS-5 Under-5 children (%)"
+          >
             <div className="h-[300px] w-full relative z-10">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={nutritionData.slice(0, 5)} layout="vertical" margin={{ left: 5, right: 15, top: 0, bottom: 0 }} barSize={16}>
@@ -299,13 +306,14 @@ export default function DashboardPage() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </ChartWrapper>
 
           {/* Vaccination Chart */}
-          <div className="lg:w-1/2 glass-card p-8 relative overflow-hidden bg-white dark:bg-slate-800 dark:border-slate-700 shadow-sm">
-            <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1 relative z-10 tracking-wide">Vaccination Coverage</h2>
-            <p className="text-[12px] text-slate-400 mb-8 relative z-10 uppercase tracking-wider font-bold">National coverage vs target (%)</p>
-            
+          <ChartWrapper
+            className="lg:w-1/2"
+            title="Vaccination Coverage"
+            subtitle="National coverage vs target (%)"
+          >
             <div className="space-y-6 relative z-10">
               {vaccinationData.map((v, i) => (
                 <div key={i} className="group/item">
@@ -333,7 +341,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </ChartWrapper>
         </section>
 
       </div>
