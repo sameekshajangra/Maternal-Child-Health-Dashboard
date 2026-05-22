@@ -318,6 +318,7 @@ export default function PolicyPage() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
