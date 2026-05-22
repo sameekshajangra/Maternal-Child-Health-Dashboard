@@ -6,7 +6,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import { kpiData, trendData, nutritionData, vaccinationData, stateHealthData } from "@/lib/data";
-import KPICard from "@/components/KPICard";
+import KPICardPremium from "@/components/KPICardPremium";
 import { Sparkles, Activity, Globe, Users, AlertTriangle, TrendingDown, RefreshCw, Download, ChevronRight, CheckCircle2 } from "lucide-react";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -112,7 +112,7 @@ export default function DashboardPage() {
     .slice(0, 5);
 
   return (
-    <div className="page-bg relative min-h-screen p-6 pt-8 pb-12 overflow-hidden transition-colors duration-300">
+    <div className="page-bg relative min-h-screen p-6 md:p-10 lg:p-12 pt-8 pb-16 overflow-hidden transition-colors duration-300">
       
       {/* Banner Graphic Header */}
       <div className="w-full h-48 md:h-64 rounded-2xl overflow-hidden relative mb-8 shadow-sm border border-slate-200 dark:border-slate-800">
@@ -164,18 +164,18 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-10">
 
         {/* Section 1: KPI Cards */}
-        <section>
+        <section id="kpis">
           <h2 className="text-lg font-bold text-slate-800 dark:text-white font-display mb-4 flex items-center gap-2">
             <Activity size={18} className="text-indigo-500" /> Key Performance Indicators
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(kpiData).map(([key, kpi], i) => (
               <div
                 key={key}
                 onClick={() => setActiveMetric(key)}
-                className="cursor-pointer dark:bg-slate-800 dark:border-slate-700 rounded-xl"
+                className="cursor-pointer premium-card"
               >
-                <KPICard
+                <KPICardPremium
                   label={kpi.label}
                   value={kpi.value}
                   unit={kpi.unit}
@@ -192,7 +192,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Section 2: AI Insights & Longitudinal Trend */}
-        <section className="flex flex-col xl:flex-row gap-6">
+        <section id="trends" className="flex flex-col xl:flex-row gap-8">
           {/* AI Insights Panel - Moved to the left for better reading flow */}
           <div className="xl:w-1/3 premium-card p-6 flex flex-col bg-white dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-700">
@@ -280,7 +280,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Section 3: State-level Breakdown */}
-        <section className="flex flex-col lg:flex-row gap-6">
+        <section id="priorities" className="flex flex-col lg:flex-row gap-8">
           {/* Nutrition Chart */}
           <div className="lg:w-1/2 glass-card p-8 relative overflow-hidden bg-white dark:bg-slate-800 dark:border-slate-700 shadow-sm">
             <h2 className="font-display font-bold text-slate-800 dark:text-white text-lg mb-1 relative z-10 tracking-wide">Child Malnutrition by State</h2>

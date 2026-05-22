@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Map, TrendingUp, Brain,
@@ -110,6 +111,15 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [hash, setHash] = useState<string>("");
+  // Sync hash with URL fragment to style sub‑items (KPI Metrics, Trend Charts, Priority States)
+  useEffect(() => {
+    const syncHash = () => setHash(window.location.hash);
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
+
   const [isDark, setIsDark] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [dashOpen, setDashOpen] = useState(true); // dashboard dropdown open by default
@@ -164,47 +174,42 @@ export default function Sidebar() {
           href="/"
           style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", minWidth: 0 }}
         >
-          {/* Gradient Logo Icon */}
+          {/* Logo Icon */}
           <div
             style={{
-              width: "42px",
-              height: "42px",
-              borderRadius: "13px",
+              width: "44px",
+              height: "44px",
+              borderRadius: "12px",
               flexShrink: 0,
-              background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #10b981 100%)",
+              background: isDark ? "#1e293b" : "#f8fafc",
+              border: `1px solid ${sidebarBorder}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
               position: "relative",
               overflow: "hidden",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%)",
-              }}
+            <Image
+              src="/logo.png"
+              alt="Maatri AI Logo"
+              width={34}
+              height={34}
+              style={{ objectFit: "contain" }}
+              priority
             />
-            <svg viewBox="0 0 24 24" fill="none" style={{ width: "22px", height: "22px", position: "relative", zIndex: 1 }}>
-              <path
-                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                fill="white"
-              />
-              <path d="M12 15l2.5-4h-5L12 15z" fill="rgba(255,255,255,0.45)" />
-            </svg>
             {/* Live dot */}
             <div
               style={{
                 position: "absolute",
-                top: "-2px",
-                right: "-2px",
-                width: "9px",
-                height: "9px",
+                top: "2px",
+                right: "2px",
+                width: "8px",
+                height: "8px",
                 borderRadius: "50%",
                 background: "#10b981",
-                border: "2px solid white",
+                border: "1.5px solid white",
                 boxShadow: "0 0 6px rgba(16,185,129,0.7)",
               }}
             />
@@ -393,13 +398,14 @@ export default function Sidebar() {
                 marginLeft: "22px",
                 paddingLeft: "20px",
                 borderLeft: "2px solid rgba(99,102,241,0.15)",
+                borderLeft: "1px solid rgba(99,102,241,0.2)",
                 display: "flex",
                 flexDirection: "column",
                 gap: "2px",
               }}
             >
               {dashboardSubItems.map((sub) => {
-                const isSubActive = pathname === sub.href && sub.href === "/";
+                const isSubActive = hash === sub.href;
                 return (
                   <Link
                     key={sub.href}
@@ -407,42 +413,19 @@ export default function Sidebar() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: "9px",
-                      padding: "8px 12px",
-                      borderRadius: "9px",
+                      gap: "10px",
+                      padding: "7px 12px",
+                      borderRadius: "8px",
                       textDecoration: "none",
-                      background: isSubActive ? subItemActive : "transparent",
-                      transition: "background 0.2s ease",
-                      cursor: "pointer",
+                      color: isSubActive ? "#4f46e5" : inactiveText,
+                      background: isSubActive ? "rgba(99,102,241,0.08)" : "transparent",
+                      transition: "all 0.2s ease",
                     }}
-                    onMouseEnter={(e) => { if (!isSubActive) (e.currentTarget as HTMLElement).style.background = subItemHover; }}
-                    onMouseLeave={(e) => { if (!isSubActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                   >
-                    <sub.icon
-                      size={13}
-                      color={isSubActive ? "#4f46e5" : inactiveText}
-                      strokeWidth={isSubActive ? 2.5 : 2}
-                    />
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: isSubActive ? 600 : 400,
-                        color: isSubActive ? "#4f46e5" : inactiveText,
-                      }}
-                    >
+                    <sub.icon size={12} strokeWidth={isSubActive ? 2.5 : 2} />
+                    <span style={{ fontSize: "12px", fontWeight: isSubActive ? 600 : 400 }}>
                       {sub.label}
                     </span>
-                    {isSubActive && (
-                      <div
-                        style={{
-                          marginLeft: "auto",
-                          width: "5px",
-                          height: "5px",
-                          borderRadius: "50%",
-                          background: "#6366f1",
-                        }}
-                      />
-                    )}
                   </Link>
                 );
               })}
@@ -464,11 +447,11 @@ export default function Sidebar() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "11px",
+                gap: "14px",
                 padding: "10px 13px",
                 borderRadius: "12px",
                 textDecoration: "none",
-                marginBottom: "4px",
+                marginBottom: "8px",
                 transition: "all 0.22s ease",
                 transform: isActive || isHovered ? "translateY(-1px)" : "translateY(0)",
                 background: isActive ? item.bgActive : isHovered ? item.hoverBg : "transparent",
@@ -495,6 +478,20 @@ export default function Sidebar() {
                   transition: "all 0.22s ease",
                 }}
               >
+                {(Object.keys(metricConfig) as Metric[]).map(m => (
+                  <button
+                    key={m}
+                    onClick={() => setMetric(m)}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer ${
+                      metric === m
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-650 text-white shadow-sm"
+                        : "bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700/80 text-slate-650 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    }`}
+                  >
+                    {metricConfig[m].icon}
+                    {metricConfig[m].shortLabel}
+                  </button>
+                ))}
                 <item.icon
                   size={16}
                   color={isActive ? "#ffffff" : isHovered ? item.textActive : inactiveText}
