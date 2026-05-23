@@ -421,6 +421,13 @@ export default function Sidebar() {
                   <Link
                     key={sub.href}
                     href={sub.href}
+                    onClick={() => {
+                      if (sub.href.includes('#')) {
+                        setHash(sub.href.substring(sub.href.indexOf('#')));
+                      } else {
+                        setHash('');
+                      }
+                    }}
                     style={{
                       display: "flex",
                       alignItems: "center",

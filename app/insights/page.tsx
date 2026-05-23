@@ -106,7 +106,7 @@ export default function InsightsPage() {
 
   return (
     <div className="page-bg relative min-h-screen p-6 md:p-10 lg:p-12 pt-8 pb-16 overflow-hidden transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
+      <div id="insights-page-content" className="max-w-7xl mx-auto p-2 bg-transparent">
         {/* Header */}
         <div className="mb-8 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-800/30 w-fit">
@@ -217,7 +217,7 @@ export default function InsightsPage() {
           </div>
 
           {/* AI Insights Panel */}
-          <div id="ai-insight-panel" className="glass-card bg-gradient-to-br from-indigo-950 to-slate-900 dark:from-slate-950 dark:to-slate-900 border-none p-6 md:p-8 text-white relative overflow-hidden flex flex-col justify-between">
+          <div className="glass-card bg-gradient-to-br from-indigo-950 to-slate-900 dark:from-slate-950 dark:to-slate-900 border-none p-6 md:p-8 text-white relative overflow-hidden flex flex-col justify-between">
             {/* Decorative mesh/blur */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
             <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
@@ -264,7 +264,7 @@ export default function InsightsPage() {
             
             <div className="relative z-10 mt-auto">
               <button 
-                onClick={() => exportToPdf('ai-insight-panel', 'maatri-policy-insight.pdf')}
+                onClick={() => exportToPdf('insights-page-content', 'maatri-policy-insight.pdf')}
                 className="w-full bg-white text-indigo-950 font-bold py-3.5 px-4 rounded-xl hover:bg-slate-50 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer text-sm"
               >
                 <Download className="w-4 h-4" />

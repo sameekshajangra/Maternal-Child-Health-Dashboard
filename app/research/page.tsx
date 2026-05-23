@@ -193,18 +193,22 @@ export default function ResearchAssistant() {
           </form>
 
           {/* Quick Prompts */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-8 pt-6 border-t border-slate-100/80 dark:border-slate-800/80 relative z-10">
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest shrink-0 flex items-center gap-1.5">
-              <Lightbulb size={12} className="text-amber-500" /> Suggested Queries
-            </span>
-            <div className="flex flex-wrap gap-2.5">
+          <div className="mt-8 pt-6 relative z-10">
+            <div className="flex items-center gap-2 mb-4">
+              <Lightbulb size={14} className="text-amber-500" />
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                Suggested Queries
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
               {EXAMPLE_QUERIES.map((p) => (
                 <button
                   key={p}
                   onClick={() => setQuery(p)}
-                  className="text-[11.5px] px-4 py-2 rounded-full bg-white dark:bg-slate-850 border border-slate-200/80 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-350 hover:bg-pink-50 dark:hover:bg-pink-950/30 hover:text-pink-600 dark:hover:text-pink-400 hover:border-pink-200 dark:hover:border-pink-900/50 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 font-semibold cursor-pointer"
+                  className="group flex items-center gap-2 text-[12px] px-4 py-2.5 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 dark:hover:from-pink-950/30 dark:hover:to-rose-950/30 hover:text-pink-600 dark:hover:text-pink-400 hover:border-pink-200 dark:hover:border-pink-800 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 font-semibold cursor-pointer"
                 >
                   {p}
+                  <ArrowRight size={12} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                 </button>
               ))}
             </div>

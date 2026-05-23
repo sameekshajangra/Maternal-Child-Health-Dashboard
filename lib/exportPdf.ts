@@ -12,11 +12,14 @@ export async function exportToPdf(elementId: string, filename: string = 'export.
     // Add a temporary class to ensure dark mode/glass backgrounds render well if needed
     // html2canvas sometimes struggles with backdrop-filter, but standard colors work.
     
+    const isDark = document.documentElement.classList.contains("dark");
+    const bgColor = isDark ? "#0f172a" : "#f8fafc";
+    
     const canvas = await html2canvas(element, {
       scale: 2, // High resolution
       useCORS: true,
       logging: false,
-      backgroundColor: '#0b1120', // Fallback to dark background color to match UI
+      backgroundColor: bgColor, // Dynamic background
     });
 
     const imgData = canvas.toDataURL('image/png');
